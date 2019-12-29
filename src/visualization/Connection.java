@@ -3,7 +3,6 @@ package visualization;
 import javafx.scene.shape.*;
 
 import java.util.Observable;
-import java.util.Observer;
 
 public class Connection extends Path implements Observer {
 
@@ -44,7 +43,7 @@ public class Connection extends Path implements Observer {
     }
 
     @Override
-    public void update(Observable o, Object arg) {
+    public void update(Subject s) {
         draw();
     }
 }

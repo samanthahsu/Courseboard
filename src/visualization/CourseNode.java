@@ -56,7 +56,6 @@ public class CourseNode extends Region implements Subject {
         getChildren().addAll(rectangle, vBox);
     }
 
-//    todo make less horribly buggy pls
     private void makeDraggable() {
         final double[] delta = new double[2];
         setOnMouseEntered(new EventHandler<MouseEvent>() {
@@ -75,21 +74,22 @@ public class CourseNode extends Region implements Subject {
             @Override
             public void handle(MouseEvent event) {
                 getScene().setCursor(Cursor.CLOSED_HAND);
-                delta[0] = getLayoutX() - event.getX();
-                delta[1] = getLayoutY() - event.getX();
+                delta[0] = getLayoutX() - event.getSceneX();
+                delta[1] = getLayoutY() - event.getSceneY();
             }
         });
         setOnMouseDragged(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                setLayoutX(event.getX() - delta[0]);
-                setLayoutY(event.getY() - delta[1]);
+                setLayoutX(event.getSceneX() + delta[0]);
+                setLayoutY(event.getSceneY() + delta[1]);
             }
         });
         setOnMouseReleased(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 getScene().setCursor(Cursor.HAND);
+                notifyObservers();
             }
         });
     }
@@ -194,6 +194,7 @@ public class CourseNode extends Region implements Subject {
         this.courseCodeTxt.setText(courseCodeTxt);
     }
 
+//    todo isolate into it's own object >> this class has too many things!
     @Override
     public void addObserver(Observer o) {
         observers.add(o);
@@ -204,6 +205,7 @@ public class CourseNode extends Region implements Subject {
         observers.remove(o);
     }
 
+//    called whenever need to update other elements in response to dragging
     @Override
     public void notifyObservers() {
         for (Observer o : observers) {
