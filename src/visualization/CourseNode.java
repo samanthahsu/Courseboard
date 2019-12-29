@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -30,7 +31,7 @@ public class CourseNode extends Region implements Subject {
 
     private TextField courseCodeTxt;
     private TextArea descripArea;
-    private Label creditsLabel = new Label("Credits:");
+    private Label creditsLabel = new Label("Credits:"); // todo use label
     private TextField creditsTxt;
     private Label preReqsLabel;
     private Text preReqsText;
@@ -44,9 +45,9 @@ public class CourseNode extends Region implements Subject {
     private Rectangle rectangle;
     private Course data;
 
-    private List<Observer> observers = new ArrayList<>(); //todo actually add them
+    private List<Observer> observers = new ArrayList<>();
 
-    CourseNode(Course c) {
+    public CourseNode(Course c) {
         data = c;
         setId(data.getCode());
         updateColors();

@@ -1,2 +1,2 @@
-##CourseBoard
+**CourseBoard**
 a visual course planner

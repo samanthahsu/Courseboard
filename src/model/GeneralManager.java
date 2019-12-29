@@ -1,6 +1,9 @@
 package model;
 
 import Exceptions.termNotFoundException;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import visualization.CourseNode;
 
 import java.util.*;
 
@@ -143,6 +146,14 @@ public class GeneralManager {
             if (t.name.equals(name)) return t;
         }
         return null;
+    }
+
+//    todo make this also affect course list
+    public boolean addCourse(Pane pane, MouseEvent event) {
+        CourseNode cn = new CourseNode(new Course("", "", 0, null, null));
+        cn.relocate(event.getX(), event.getY());
+        pane.getChildren().add(cn);
+        return true;
     }
 
 //    need to order the terms in a solid way
