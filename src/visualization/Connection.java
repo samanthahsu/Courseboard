@@ -1,14 +1,19 @@
 package visualization;
 
+import javafx.scene.layout.Region;
 import javafx.scene.shape.*;
 
 import java.util.Observable;
 
-public class Connection extends Path implements Observer {
+public class Connection extends Region implements Observer {
 
     CourseNode source;
     CourseNode destination;
     boolean connected;
+
+    MoveTo moveTo;
+    ArcTo arcTo;
+    Path path;
 
     Connection(CourseNode source, CourseNode destination) {
         if (source == null || destination == null) {
@@ -16,22 +21,30 @@ public class Connection extends Path implements Observer {
             return;
         }
         this.source = source;
+        source.addObserver(this);
         this.destination = destination;
+        destination.addObserver(this);
         connected = true;
         draw();
     }
 
     public void draw() {
-        MoveTo moveTo = new MoveTo();
+        path = new Path();
+        moveTo = new MoveTo();
         moveTo.setX(source.getLayoutX());
         moveTo.setY(source.getLayoutY());
 
-        ArcTo arcTo = new ArcTo();
+        arcTo = new ArcTo();
         arcTo.setX(destination.getLayoutX());
         arcTo.setY(destination.getLayoutY());
         arcTo.setRadiusX(Math.abs(source.getLayoutX() - destination.getLayoutX()));
         arcTo.setRadiusY(Math.abs(source.getLayoutY() - destination.getLayoutY()));
-        getElements().addAll(moveTo, arcTo);
+        path.getElements().addAll(moveTo, arcTo);
+        getChildren().add(path);
+    }
+
+    public void listen() {
+
     }
 
     public void connect() {
@@ -43,7 +56,12 @@ public class Connection extends Path implements Observer {
     }
 
     @Override
-    public void update(Subject s) {
-        draw();
+    public void update(boolean isDraw) {
+        if (isDraw) {
+            draw();
+        } else {
+            getChildren().remove(path);
+            path = null;
+        }
     }
 }
