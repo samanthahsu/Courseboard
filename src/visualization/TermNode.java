@@ -3,66 +3,56 @@ package visualization;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import model.Course;
 import model.Term;
 
 
-public class TermNode extends Region {
+public class TermNode extends BoardComponent {
 
     GridPane gridPane;
     TextField title;
     VBox vBox;
     Term term;
-    Rectangle background = new Rectangle();
 
     TermNode() {
         term = new Term("");
         vBox = new VBox();
-        title = new TextField();
+        initTitle();
         gridPane = new GridPane();
-        for (int i = 0; i < 5; i++) {
-            gridPane.add(new CourseNode(
-                    new Course("", "", 0, null, null)), i, 0);
+        makeDraggable();
 
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 2; j++) {
+                Rectangle filler = new Rectangle(100, 100, Color.BEIGE);
+                filler.setStroke(Color.GRAY);
+                gridPane.setGridLinesVisible(true);
+                gridPane.add(filler, i, j, 1, 1);
+
+            }
         }
-        gridPane.setMinSize(200, 150);
 
         vBox.getChildren().addAll(title, gridPane);
-        vBox.setPadding(new Insets(10));
-
-        background.setFill(Color.GRAY);
-        background.setWidth(vBox.getHeight());
-        background.setHeight(vBox.getWidth());
-
-        getChildren().addAll(background, vBox);
-
+        vBox.setPadding(new Insets(20));
+        vBox.setSpacing(10);
+        vBox.setBackground(new Background(new BackgroundFill(Color.BEIGE, null, null)));
+        getChildren().add(vBox);
+//        todo make the course node on top of the term ones
+//        todo when a course is dragged in,
     }
 
-    public void setHandlers() {
+    private void initTitle() {
+        title = new TextField();
         title.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
-                term.setName(title.getText());
-            }
-        });
-        gridPane.setOnDragOver(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                if (event.getGestureSource() != gridPane && event.getDragboard().hasString()) {
-
+                if (event.getCode() == KeyCode.ENTER) {
+                    requestFocus();
+                    term.setTitle(title.getText());
                 }
-            }
-        });
-        gridPane.setOnDragDropped(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
-                Dragboard db = event.getDragboard();
             }
         });
     }

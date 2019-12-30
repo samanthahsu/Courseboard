@@ -155,7 +155,8 @@ public class GeneralManager {
 //    so like component, branch and leaf
 //    courseNode is the leaf, and term is the branch
     public boolean addCourse(Pane pane, MouseEvent event) {
-        CourseNode cn = new CourseNode(new Course("", "", 0, null, null));
+        Course newCourse = new Course("", "", 0, null, null);
+        CourseNode cn = new CourseNode(newCourse);
         cn.relocate(event.getX(), event.getY());
         pane.getChildren().add(cn);
         return true;

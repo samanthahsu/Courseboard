@@ -7,12 +7,13 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.Course;
 import model.GeneralManager;
-import model.Term;
 
 public class App extends Application {
 
@@ -28,14 +29,14 @@ public class App extends Application {
         MenuBar menuBar = initMenuBar();
 
         MyPane pane = new MyPane();
-        pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if(event.getClickCount() == 2) {
-                    generalManager.addCourse(pane, event);
-                }
-            }
-        });
+//        pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
+//            @Override
+//            public void handle(MouseEvent event) {
+//                if(event.getClickCount() == 2) {
+//                    generalManager.addCourse(pane, event);
+//                }
+//            }
+//        });
 
 //      todo figure out how to place the different nodes using calculations
         CourseNode node1 = new CourseNode(new Course("hi", "edefdsfd", 3, null, null));
@@ -57,7 +58,7 @@ public class App extends Application {
         root.getChildren().addAll(menuBar, pane);
 
         primaryStage.setResizable(true);
-        primaryStage.setScene(new Scene(root, 1024, 768));
+        primaryStage.setScene(new Scene(root, 1024, 1024));
         primaryStage.setTitle("Testing...");
         primaryStage.sizeToScene();
         primaryStage.show();
@@ -65,6 +66,7 @@ public class App extends Application {
 
     private MenuBar initMenuBar() {
         MenuBar menuBar = new MenuBar();
+        menuBar.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, null, null)));
         Menu menuFile = new Menu("File");
         MenuItem newItem = new MenuItem("New...");
         MenuItem openItem = new MenuItem("Open...");
@@ -79,7 +81,7 @@ public class App extends Application {
         menuEdit.getItems().addAll(addTerm, addCourse, clearAll);
 
         menuBar.getMenus().addAll(menuFile, menuEdit);
-
+        menuBar.toFront();
         return menuBar;
     }
 
