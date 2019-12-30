@@ -12,24 +12,22 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Course;
 import model.GeneralManager;
+import model.Term;
 
 public class App extends Application {
 
     GeneralManager generalManager = new GeneralManager();
+//    todo enable saving and loading for display config and data classes: so course, term, course manager, nodes and stuff
+//    todo also probably best to save the pane as well, to avoid recompiling
+
+//    todo zoom in and out of pane
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         VBox root = new VBox();
-        MenuBar menuBar = new MenuBar();
-        Menu menuFile = new Menu("File");
-        MenuItem newItem = new MenuItem("New...");
-        MenuItem openItem = new MenuItem("Open...");
-        MenuItem saveItem = new MenuItem("Save");
-        MenuItem saveAsItem = new MenuItem("Save As...");
-        menuFile.getItems().addAll(newItem, openItem, saveAsItem, saveItem);
-        menuBar.getMenus().add(menuFile);
+        MenuBar menuBar = initMenuBar();
 
-        Pane pane = new Pane();
+        MyPane pane = new MyPane();
         pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -51,7 +49,10 @@ public class App extends Application {
         CourseNode node3 = new CourseNode(new Course("CPSC221", "actually a useful course", 4, null, null));
         node3.relocate(450, 400);
 
-        pane.getChildren().addAll(conn, node1, node2, node3);
+        TermNode term1 = new TermNode();
+        term1.relocate(500, 250);
+
+        pane.getChildren().addAll(conn, node1, node2, node3, term1);
 
         root.getChildren().addAll(menuBar, pane);
 
@@ -60,6 +61,26 @@ public class App extends Application {
         primaryStage.setTitle("Testing...");
         primaryStage.sizeToScene();
         primaryStage.show();
+    }
+
+    private MenuBar initMenuBar() {
+        MenuBar menuBar = new MenuBar();
+        Menu menuFile = new Menu("File");
+        MenuItem newItem = new MenuItem("New...");
+        MenuItem openItem = new MenuItem("Open...");
+        MenuItem saveItem = new MenuItem("Save");
+        MenuItem saveAsItem = new MenuItem("Save As...");
+        menuFile.getItems().addAll(newItem, openItem, saveAsItem, saveItem);
+
+        Menu menuEdit = new Menu("Edit");
+        MenuItem addTerm = new MenuItem("Add Term");
+        MenuItem addCourse = new MenuItem("Add Course");
+        MenuItem clearAll = new MenuItem("Clear All");
+        menuEdit.getItems().addAll(addTerm, addCourse, clearAll);
+
+        menuBar.getMenus().addAll(menuFile, menuEdit);
+
+        return menuBar;
     }
 
 }

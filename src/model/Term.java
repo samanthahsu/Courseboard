@@ -9,10 +9,10 @@ import java.util.Set;
 public class Term extends HBox {
 
     static final int MAX = 20;
-    String name;
+    private String name;
     Set<Course> courses;
 
-    Term(String name) {
+    public Term(String name) {
         this.name = name;
         courses = new HashSet<>();
     }
@@ -44,5 +44,13 @@ public class Term extends HBox {
             ret.append(c.toString()).append("\n");
         }
         return ret.toString();
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -45,7 +45,7 @@ public class GeneralManager {
                 case "3":
                     removeTerm();
                 case "4":
-                    addCourse();
+                    addCourseOld();
                     break;
                 case "5":
                     removeCourse();
@@ -72,7 +72,7 @@ public class GeneralManager {
         terms.remove(findTerm(scanner.nextLine()));
     }
 
-    public void addCourse() {
+    public void addCourseOld() {
         try {
             System.out.println(BORDER);
             Term t = getTerm();
@@ -143,12 +143,17 @@ public class GeneralManager {
 
     public Term findTerm(String name) {
         for (Term t : terms) {
-            if (t.name.equals(name)) return t;
+            if (t.getName().equals(name)) return t;
         }
         return null;
     }
 
 //    todo make this also affect course list
+//    todo is it better to have two sets: one where the course info is stored in the courseNode, and one set where
+//    the course manager has a set of courses
+//    OK so each term has a set of courses.
+//    so like component, branch and leaf
+//    courseNode is the leaf, and term is the branch
     public boolean addCourse(Pane pane, MouseEvent event) {
         CourseNode cn = new CourseNode(new Course("", "", 0, null, null));
         cn.relocate(event.getX(), event.getY());
