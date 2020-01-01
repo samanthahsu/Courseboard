@@ -1,6 +1,7 @@
 package visualization;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
@@ -15,9 +16,16 @@ import javafx.stage.Stage;
 import model.Course;
 import model.GeneralManager;
 
-public class App extends Application {
+import java.util.LinkedList;
+import java.util.List;
+
+public class MainWindow extends Application {
+
+    public final static char PRE_REQ_TYPE = 'p';
+    public final static char CO_REQ_TYPE = 'c';
 
     GeneralManager generalManager = new GeneralManager();
+    ConnectionManager connectionManager;
 //    todo enable saving and loading for display config and data classes: so course, term, course manager, nodes and stuff
 //    todo also probably best to save the pane as well, to avoid recompiling
 
@@ -29,6 +37,15 @@ public class App extends Application {
         MenuBar menuBar = initMenuBar();
 
         MyPane pane = new MyPane();
+
+        connectionManager = new ConnectionManager(pane);
+
+        LinkedList<String> prereqList = new LinkedList<>();
+        prereqList.add("MATH100");
+        connectionManager.addCourse(new Course("CPSC121", "", 0, prereqList, null));
+
+        connectionManager.addCourse(new Course("MATH100"));
+
 //        pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
 //            @Override
 //            public void handle(MouseEvent event) {
@@ -39,21 +56,21 @@ public class App extends Application {
 //        });
 
 //      todo figure out how to place the different nodes using calculations
-        CourseNode node1 = new CourseNode(new Course("hi", "edefdsfd", 3, null, null));
-        node1.relocate(50,50);
+//        CourseNode node1 = new CourseNode(new Course("hi", "edefdsfd", 3, null, null));
+//        node1.relocate(50,50);
+//
+//        CourseNode node2 = new CourseNode(new Course("double hi", "wow do i exuisetnkjsd", 666, null, null));
+//        node2.relocate(150,250);
+//
+//        Connection conn = new Connection(node1, node2);
+//
+//        CourseNode node3 = new CourseNode(new Course("CPSC221", "actually a useful course", 4, null, null));
+//        node3.relocate(450, 400);
+//
+//        TermNode term1 = new TermNode();
+//        term1.relocate(500, 250);
 
-        CourseNode node2 = new CourseNode(new Course("double hi", "wow do i exuisetnkjsd", 666, null, null));
-        node2.relocate(150,250);
-
-        Connection conn = new Connection(node1, node2);
-
-        CourseNode node3 = new CourseNode(new Course("CPSC221", "actually a useful course", 4, null, null));
-        node3.relocate(450, 400);
-
-        TermNode term1 = new TermNode();
-        term1.relocate(500, 250);
-
-        pane.getChildren().addAll(conn, node1, node2, node3, term1);
+//        pane.getChildren().addAll(conn, node1, node2, node3, term1);
 
         root.getChildren().addAll(menuBar, pane);
 
@@ -77,6 +94,12 @@ public class App extends Application {
         Menu menuEdit = new Menu("Edit");
         MenuItem addTerm = new MenuItem("Add Term");
         MenuItem addCourse = new MenuItem("Add Course");
+        addCourse.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                connectionManager.addEmptyCourse();
+            }
+        });
         MenuItem clearAll = new MenuItem("Clear All");
         menuEdit.getItems().addAll(addTerm, addCourse, clearAll);
 

@@ -4,13 +4,13 @@ import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import model.Course;
 
 import java.util.Set;
@@ -23,34 +23,28 @@ public class CourseNode extends BoardComponent {
     static final int MIN_WIDTH = 200;
     static final int MIN_HEIGHT = 150;
 
-    private TextField courseCodeTxt;
-    private TextArea descripArea;
+    private Text courseCodeTxt;
+    private Text notesTxt;
     private Label creditsLabel = new Label("Credits:"); // todo use label
-    private TextField creditsTxt;
-    private Label preReqsLabel;
+    private Text creditsTxt;
     private Text preReqsText;
-    private Label coReqsLabel;
-    private Text coReqText;
+    private Text coReqsText;
     private Button editBtn;
 
     Color fillColor = Color.BEIGE;
     Color borderColor = Color.GRAY;
     Set<CourseNode> dependencies;
     VBox vBox;
-    private Rectangle rectangle;
-    private Course data;
+    private Course courseData;
 
 
     public CourseNode(Course c) {
-        data = c;
-        setId(data.getCode());
+        courseData = c;
+        setId(courseData.getCode());
         updateColors();
-        formatRectangle();
         formatVbox();
         makeDraggable();
-
-
-        getChildren().addAll(rectangle, vBox);
+        getChildren().add(vBox);
     }
 
 
@@ -65,94 +59,40 @@ public class CourseNode extends BoardComponent {
         vBox.setMinSize(MIN_WIDTH, MIN_HEIGHT);
 
         initCourseCodeTxt();
-        formatDescripArea();
+        formatDescripFlow();
         formatCreditsTxt();
+        preReqsText = new Text("Pre-reqs here");
+        coReqsText = new Text("Co-reqs here");
+        formatButton();
 
+        vBox.setBackground(new Background(new BackgroundFill(Color.BEIGE, null, null)));
+        vBox.getChildren().addAll(courseCodeTxt, creditsTxt, notesTxt, preReqsText, coReqsText, editBtn);
+    }
+
+    private void formatButton() {
         editBtn = new Button("Edit");
         editBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                EditCourseWindow editCourseWindow = new EditCourseWindow(data);
+                EditCourseWindow editCourseWindow = new EditCourseWindow(courseData);
             }
         });
-
-
-        vBox.getChildren().addAll(courseCodeTxt, creditsTxt, descripArea, editBtn);
     }
 
     private void formatCreditsTxt() {
-        creditsTxt = new TextField(Integer.toString(data.getCredits()));
-        EventHandler<KeyEvent> me = new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode() == KeyCode.ENTER) {
-                    requestFocus();
-                    String ui = creditsTxt.getText();
-                    if (ui.matches("[0-9]*")) {
-                        data.setCredits(Integer.parseInt(ui));
-                    } else {
-                        creditsTxt.setText(Integer.toString(data.getCredits()));
-                        Alert alert = new Alert(Alert.AlertType.WARNING);
-                        alert.setContentText("Please enter an integer");
-                        alert.showAndWait();
-                    }
-                }
-            }
-        };
-        creditsTxt.addEventHandler(KeyEvent.KEY_PRESSED, me);
+        creditsTxt = new Text("Credits: " + Integer.toString(courseData.getCredits()));
     }
 
     private void initCourseCodeTxt() {
-        courseCodeTxt = new TextField(data.getCode());
-        EventHandler<KeyEvent> eventHandler = new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if (event.getCode() == KeyCode.ENTER) {
-                    requestFocus();
-                    String uiText = courseCodeTxt.getText();
-                    if(!uiText.matches(".*\\W.*")) {
-//                    if is legal course code
-                        data.setCode(uiText.toUpperCase());
-                        courseCodeTxt.setText(data.getCode());
-                    } else {
-                        courseCodeTxt.setText(data.getCode());
-                        Alert alert = new Alert(Alert.AlertType.WARNING);
-                        alert.setContentText("Please enter a valid Course Code eg. 'CPSC221'");
-                        alert.showAndWait();
-                    }
-                }
-            }
-        };
-        courseCodeTxt.addEventHandler(KeyEvent.KEY_PRESSED, eventHandler);
+        courseCodeTxt = new Text("ID: " + courseData.getCode());
     }
 
-    private void formatDescripArea() {
-        descripArea = new TextArea(data.getDescription());
-        descripArea.maxWidthProperty().bind(rectangle.widthProperty().subtract(H_PAD*2));
-        descripArea.setMaxHeight(75);
-
-        EventHandler<KeyEvent> exitDescripTextEH = new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent event) {
-                if(event.getCode() == KeyCode.ENTER && !event.isShiftDown()) {
-                    requestFocus();
-                    data.setDescription(descripArea.getText());
-                } else if (event.getCode() == KeyCode.ENTER) {
-                    descripArea.setText(descripArea.getText() + "\n");
-                    descripArea.setWrapText(true);
-                }
-            }
-        };
-        descripArea.addEventHandler(KeyEvent.KEY_PRESSED, exitDescripTextEH);
+    private void formatDescripFlow() {
+        notesTxt = new Text(courseData.getDescription());
+        TextFlow tf = new TextFlow(notesTxt);
+        tf.maxWidthProperty().bind(vBox.widthProperty().subtract(H_PAD*2));
     }
 
-    private void formatRectangle() {
-        rectangle = new Rectangle();
-        rectangle.setFill(fillColor);
-        rectangle.setStroke(borderColor);
-        rectangle.setHeight(MIN_HEIGHT + V_PAD*2);
-        rectangle.setWidth(MIN_WIDTH + H_PAD*2);
-    }
 
     public void doubleClickEditCourse() {
         setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -165,6 +105,9 @@ public class CourseNode extends BoardComponent {
         });
     }
 
+    public Course getCourseData() {
+        return courseData;
+    }
 
 
     public String getCourseCodeTxt() {
@@ -175,4 +118,7 @@ public class CourseNode extends BoardComponent {
         this.courseCodeTxt.setText(courseCodeTxt);
     }
 
+    public void displayMissing(String miss) {
+//        todo appends a text onto course with name of missingCourse and colorcoded by type (coreq/prereq)
+    }
 }

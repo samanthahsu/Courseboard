@@ -1,6 +1,6 @@
 package model;
 
-import Exceptions.termNotFoundException;
+import Exceptions.TermNotFoundException;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import visualization.CourseNode;
@@ -107,13 +107,13 @@ public class GeneralManager {
         }
     }
 
-    private Term getTerm() throws termNotFoundException {
+    private Term getTerm() throws TermNotFoundException {
         System.out.println("Term to add Course to: ");
         Term t = findTerm(scanner.nextLine());
 
         if (t == null) {
             System.out.println("Term name not valid");
-            throw new termNotFoundException();
+            throw new TermNotFoundException();
         }
         return t;
     }
@@ -123,7 +123,7 @@ public class GeneralManager {
         Term t = null;
         try {
             t = getTerm();
-        } catch (termNotFoundException e) {
+        } catch (TermNotFoundException e) {
             System.out.println("input error occurred");
         }
         System.out.println("Removing Course");

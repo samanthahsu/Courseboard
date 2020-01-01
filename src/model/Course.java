@@ -18,6 +18,13 @@ public class Course {
         req = new CrsReqs(prereq, coreq);
     }
 
+    public Course(String code) {
+        this.code = code;
+        description = "Description here";
+        req = new CrsReqs(new LinkedList<>(), new LinkedList<>());
+//        dummy course for comparison
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
