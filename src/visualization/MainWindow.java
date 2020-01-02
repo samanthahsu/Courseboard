@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.Course;
 import model.GeneralManager;
+import model.Link;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -42,7 +43,7 @@ public class MainWindow extends Application {
 
         LinkedList<String> prereqList = new LinkedList<>();
         prereqList.add("MATH100");
-        connectionManager.addCourse(new Course("CPSC121", "", 0, prereqList, null));
+        connectionManager.addCourse(new Course("CPSC121", "", 0, prereqList, new LinkedList<>()));
 
         connectionManager.addCourse(new Course("MATH100"));
 

@@ -31,7 +31,7 @@ public class ConnectionManager {
 
         for (Map.Entry element : missing.entrySet()) {
             String m = (String) element.getValue();
-            if (m.equals(newNode.getCourseData().getCode())) {
+            if (m.equals(newNode.getCourse().getId())) {
                 Connection e = new Connection((CourseNode) element.getKey(), newNode);
                 connectionSet.add(e);
                 missing.remove(element.getKey());
@@ -40,10 +40,10 @@ public class ConnectionManager {
         }
 
 //        todo add same thing for coreqs later
-        List<String> newPrereqs = newNode.getCourseData().getPreReq();
+        List<String> newPrereqs = newNode.getCourse().getPrereq();
         for (String req : newPrereqs) {
             for (CourseNode existingNode : allCrsNodes) {
-                if (req.equals(existingNode.getCourseData().getCode())) {
+                if (req.equals(existingNode.getCourse().getId())) {
                     System.out.println(req);
                     Connection e = new Connection(newNode, existingNode);
                     connectionSet.add(e);

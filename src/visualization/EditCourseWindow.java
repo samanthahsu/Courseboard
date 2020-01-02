@@ -13,20 +13,28 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import model.Course;
 
+import java.util.Arrays;
+import java.util.LinkedList;
+
 
 public class EditCourseWindow extends Stage {
 
-    Course course;
+//    todo make edit box already have course info stuff from before
+    Course course = new Course("");
     GridPane gridPane = new GridPane();
-    TextField courseCodeText = new TextField();
-    TextField description = new TextField();
+    TextField courseCodeText;
+    TextField notes = new TextField();
     TextField creditsText = new TextField();
     TextField prereqText = new TextField();
     TextField coreqText = new TextField();
     Button submitBtn = new Button("Save");
 
-    EditCourseWindow(Course course) {
+    EditCourseWindow(CourseNode cn) {
         super();
+        course = cn.getCourse();
+        courseCodeText = new TextField(course.getId());
+        notes = new TextField(course.getNotes());
+        creditsText = new TextField(Integer.toString(course.getCredits()));
         setTitle("Editing Course");
         gridPane.setPadding(new Insets(10));
         gridPane.setHgap(10);
@@ -44,7 +52,7 @@ public class EditCourseWindow extends Stage {
         gridPane.add(coreqText, 1, 3);
 
         gridPane.add(new Label("Notes"), 0, 4);
-        gridPane.add(description, 1, 4);
+        gridPane.add(notes, 1, 4);
 
         gridPane.add(submitBtn, 0, 5);
         submitBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -53,9 +61,8 @@ public class EditCourseWindow extends Stage {
 //                todo check for valid inputs
                 try {
                     if (updateCourseInfo()) {
+                        cn.updateDisplay();
                         close();
-                    } else {
-                        submitBtn.setText("Error in inputs!");
                     }
                 } catch (BadCourseCodeException e) {
                     courseCodeText.requestFocus();
@@ -86,14 +93,20 @@ public class EditCourseWindow extends Stage {
             throw new BadCourseCodeException();
         } else if (!credits.matches("[0-9]*")) {
             throw new BadCreditException();
-        } else if (!prereqs.matches(".*(\\w| ).*")) {
+        } else if (!prereqs.matches(".*(\\w| )*.*")) {
             throw new BadPrereqException();
-        } else if (!coreqs.matches(".*(\\w| ).*")) {
+        } else if (!coreqs.matches(".*(\\w| )*.*")) {
             throw new BadCoreqException();
         }
 
-//      todo if all inputs valid update and return true
-        return false;
+        course.setId(courseCode);
+        course.setCredits(Integer.parseInt(credits));
+        course.setNotes("");
+        LinkedList<String> newPrereq = new LinkedList<String>(Arrays.asList(prereqs.split(" ")));
+        course.setPreReq(newPrereq);
+        LinkedList<String> newCoreq = new LinkedList<String>(Arrays.asList(coreqs.split(" ")));
+        course.setCoReq(newCoreq);
+        return true;
     }
 }
 

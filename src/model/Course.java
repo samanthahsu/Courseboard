@@ -1,28 +1,32 @@
 package model;
 
+import visualization.CourseList;
+
 import java.util.LinkedList;
 import java.util.Objects;
 
 public class Course {
+// there should be one unique course per course ID, the same pre-reqs and same co-reqs
 
-    String code;
-    String description;
-    int credits;
-
-    CrsReqs req;
+    String id = "ID";
+    String notes = "Notes";
+    int credits = 0;
+    private CourseList prereq;
+    private CourseList coreq;
 
     public Course(String code, String description, int credits, LinkedList<String> prereq, LinkedList<String> coreq) {
-        this.code = code;
-        this.description = description;
+        this.id = code;
+        this.notes = description;
         this.credits = credits;
-        req = new CrsReqs(prereq, coreq);
+        this.prereq = new CourseList(prereq, CourseList.PRE_REQ);
+        this.coreq = new CourseList(coreq, CourseList.CO_REQ);
     }
 
+    //        dummy course for comparison
     public Course(String code) {
-        this.code = code;
-        description = "Description here";
-        req = new CrsReqs(new LinkedList<>(), new LinkedList<>());
-//        dummy course for comparison
+        this.id = code;
+        this.prereq = new CourseList(CourseList.PRE_REQ);
+        this.coreq = new CourseList(CourseList.CO_REQ);
     }
 
     @Override
@@ -30,34 +34,34 @@ public class Course {
         if (this == o) return true;
         if (!(o instanceof Course)) return false;
         Course course = (Course) o;
-        return code.equals(course.code);
+        return id.equals(course.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(code);
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
-        return code + ": " + description + '\'' +
+        return id + ": " + notes + '\'' +
                 ", credits=" + credits;
     }
 
-    public String getCode() {
-        return code;
+    public String getId() {
+        return id;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getDescription() {
-        return description;
+    public String getNotes() {
+        return notes;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setNotes(String description) {
+        this.notes = description;
     }
 
     public int getCredits() {
@@ -68,20 +72,27 @@ public class Course {
         this.credits = credits;
     }
 
-    public LinkedList<String> getPreReq() {
-        return req.getPrereq();
+    public CourseList getPrereq() {
+        return prereq;
     }
 
-    public void setPreReq(LinkedList<String> preReq) {
-        this.req.prereq = preReq;
+    public CourseList getCoreq() {
+        return coreq;
     }
 
-    public LinkedList<String> getCoReq() {
-        return req.coreq;
+    public String getPrereqString() {
+//        todo
+        return "";
+    }
+    public String getCoreqString() {
+        return "";
     }
 
-    public void setCoReq(LinkedList<String> coReq) {
-        this.req.coreq = coReq;
+    public void setPreReq(LinkedList<String> newPrereq) {
+        prereq = new CourseList(prereq, CourseList.PRE_REQ);
     }
 
+    public void setCoReq(LinkedList<String> newCoreq) {
+        coreq = new CourseList(coreq, CourseList.CO_REQ);
+    }
 }

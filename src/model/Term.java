@@ -28,7 +28,7 @@ public class Term extends HBox {
 
     public Course findCourse(String code) {
         for (Course c : courses) {
-            if (c.code.equals(code)) return c;
+            if (c.id.equals(code)) return c;
         }
         return null;
     }

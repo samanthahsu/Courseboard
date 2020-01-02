@@ -13,10 +13,12 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import model.Course;
 
+import java.util.LinkedList;
 import java.util.Set;
 
 public class CourseNode extends BoardComponent {
 
+//    todo add another observer to edit the coursenode contents according to course contents
     private static final double H_PAD = 20;
     private static final double V_PAD = 20;
     private static final double V_SPAC = 5;
@@ -35,15 +37,15 @@ public class CourseNode extends BoardComponent {
     Color borderColor = Color.GRAY;
     Set<CourseNode> dependencies;
     VBox vBox;
-    private Course courseData;
+    private Course course;
 
 
     public CourseNode(Course c) {
-        courseData = c;
-        setId(courseData.getCode());
+        course = c;
         updateColors();
         formatVbox();
         makeDraggable();
+        updateDisplay();
         getChildren().add(vBox);
     }
 
@@ -71,24 +73,25 @@ public class CourseNode extends BoardComponent {
 
     private void formatButton() {
         editBtn = new Button("Edit");
+        CourseNode me = this;
         editBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
-                EditCourseWindow editCourseWindow = new EditCourseWindow(courseData);
+                new EditCourseWindow(me);
             }
         });
     }
 
     private void formatCreditsTxt() {
-        creditsTxt = new Text("Credits: " + Integer.toString(courseData.getCredits()));
+        creditsTxt = new Text("Credits: " + Integer.toString(course.getCredits()));
     }
 
     private void initCourseCodeTxt() {
-        courseCodeTxt = new Text("ID: " + courseData.getCode());
+        courseCodeTxt = new Text("ID: " + course.getId());
     }
 
     private void formatDescripFlow() {
-        notesTxt = new Text(courseData.getDescription());
+        notesTxt = new Text(course.getNotes());
         TextFlow tf = new TextFlow(notesTxt);
         tf.maxWidthProperty().bind(vBox.widthProperty().subtract(H_PAD*2));
     }
@@ -105,8 +108,8 @@ public class CourseNode extends BoardComponent {
         });
     }
 
-    public Course getCourseData() {
-        return courseData;
+    public Course getCourse() {
+        return course;
     }
 
 
@@ -121,4 +124,14 @@ public class CourseNode extends BoardComponent {
     public void displayMissing(String miss) {
 //        todo appends a text onto course with name of missingCourse and colorcoded by type (coreq/prereq)
     }
+
+    public void updateDisplay() {
+//        todo updates fields according to course data
+        courseCodeTxt.setText(course.getId());
+        creditsTxt.setText(Integer.toString(course.getCredits()));
+        preReqsText.setText(course.getPrereqString());
+        coReqsText.setText(course.getCoreqString());
+    }
+
+
 }
