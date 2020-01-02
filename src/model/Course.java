@@ -80,19 +80,19 @@ public class Course {
         return coreq;
     }
 
-    public String getPrereqString() {
-//        todo
-        return "";
+    public String getPrereqDisplayString() {
+        return prereq.toDisplayString();
     }
-    public String getCoreqString() {
-        return "";
+
+    public String getCoreqDisplayString() {
+        return coreq.toDisplayString();
     }
 
     public void setPreReq(LinkedList<String> newPrereq) {
-        prereq = new CourseList(prereq, CourseList.PRE_REQ);
+        prereq = new CourseList(newPrereq, CourseList.PRE_REQ);
     }
 
     public void setCoReq(LinkedList<String> newCoreq) {
-        coreq = new CourseList(coreq, CourseList.CO_REQ);
+        coreq = new CourseList(newCoreq, CourseList.CO_REQ);
     }
 }

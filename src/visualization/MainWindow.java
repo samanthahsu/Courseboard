@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
@@ -15,10 +14,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.Course;
 import model.GeneralManager;
-import model.Link;
 
 import java.util.LinkedList;
-import java.util.List;
 
 public class MainWindow extends Application {
 

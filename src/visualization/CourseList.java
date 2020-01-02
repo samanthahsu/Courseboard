@@ -1,8 +1,5 @@
 package visualization;
 
-import model.Course;
-import model.Link;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -21,9 +18,9 @@ public class CourseList extends LinkedList<String> {
         addAll(list);
     }
 
-    private String toString(LinkedList<String> stringLinkedList) {
+    public String toDisplayString() {
         StringBuilder ret = new StringBuilder();
-        for (String s : stringLinkedList) {
+        for (String s : this) {
             ret.append(s += ", ");
         }
         if (ret.length() == 0) return "";

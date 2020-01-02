@@ -68,7 +68,6 @@ public class ConnectionManager {
 
     }
 
-
     public void addEmptyCourse() {
         CourseNode newNode = new CourseNode(new Course(""));
         addUpdate(newNode);

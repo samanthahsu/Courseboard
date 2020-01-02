@@ -60,10 +60,9 @@ public class EditCourseWindow extends Stage {
             public void handle(MouseEvent event) {
 //                todo check for valid inputs
                 try {
-                    if (updateCourseInfo()) {
-                        cn.updateDisplay();
-                        close();
-                    }
+                    updateCourseInfo();
+                    cn.updateDisplay();
+                    close();
                 } catch (BadCourseCodeException e) {
                     courseCodeText.requestFocus();
 //                   todo highlight corresponding text things
@@ -89,7 +88,7 @@ public class EditCourseWindow extends Stage {
         String prereqs = prereqText.getText();
         String coreqs = coreqText.getText();
 
-        if ((courseCode.matches(".*\\W.*"))) {
+        if (courseCode.matches(".*\\W.*")) {
             throw new BadCourseCodeException();
         } else if (!credits.matches("[0-9]*")) {
             throw new BadCreditException();
@@ -102,10 +101,10 @@ public class EditCourseWindow extends Stage {
         course.setId(courseCode);
         course.setCredits(Integer.parseInt(credits));
         course.setNotes("");
-        LinkedList<String> newPrereq = new LinkedList<String>(Arrays.asList(prereqs.split(" ")));
-        course.setPreReq(newPrereq);
-        LinkedList<String> newCoreq = new LinkedList<String>(Arrays.asList(coreqs.split(" ")));
-        course.setCoReq(newCoreq);
+        LinkedList<String> prereqList = new LinkedList<String>(Arrays.asList(prereqs.split(" ")));
+        course.setPreReq(prereqList);
+        LinkedList<String> coreqList = new LinkedList<String>(Arrays.asList(coreqs.split(" ")));
+        course.setCoReq(coreqList);
         return true;
     }
 }

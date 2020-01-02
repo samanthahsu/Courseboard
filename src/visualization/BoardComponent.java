@@ -16,8 +16,6 @@ class BoardComponent extends Region implements Subject {
 
     private List<Observer> observers = new ArrayList<>();
 
-
-    //    todo some up with common functions
     public void makeDraggable() {
         final double[] delta = new double[2];
         setOnMouseEntered(new EventHandler<MouseEvent>() {
@@ -57,7 +55,6 @@ class BoardComponent extends Region implements Subject {
         });
     }
 
-    //    todo isolate into it's own object >> this class has too many things!
     @Override
     public void addObserver(Observer o) {
         observers.add(o);

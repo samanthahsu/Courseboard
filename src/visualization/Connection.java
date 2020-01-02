@@ -6,6 +6,7 @@ import javafx.scene.shape.*;
 import java.util.Observable;
 
 public class Connection extends Region implements Observer {
+//    TODO make connection update with change of requisites
 
     CourseNode source;
     CourseNode destination;

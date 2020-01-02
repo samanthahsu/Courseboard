@@ -13,7 +13,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import model.Course;
 
-import java.util.LinkedList;
 import java.util.Set;
 
 public class CourseNode extends BoardComponent {
@@ -25,20 +24,18 @@ public class CourseNode extends BoardComponent {
     static final int MIN_WIDTH = 200;
     static final int MIN_HEIGHT = 150;
 
-    private Text courseCodeTxt;
+    private Text courseIdTxt;
     private Text notesTxt;
-    private Label creditsLabel = new Label("Credits:"); // todo use label
     private Text creditsTxt;
     private Text preReqsText;
     private Text coReqsText;
     private Button editBtn;
 
-    Color fillColor = Color.BEIGE;
-    Color borderColor = Color.GRAY;
-    Set<CourseNode> dependencies;
-    VBox vBox;
+    private Color fillColor = Color.BEIGE;
+    private Color borderColor = Color.GRAY;
+    private Set<CourseNode> dependencies;
+    private VBox vBox;
     private Course course;
-
 
     public CourseNode(Course c) {
         course = c;
@@ -64,11 +61,13 @@ public class CourseNode extends BoardComponent {
         formatDescripFlow();
         formatCreditsTxt();
         preReqsText = new Text("Pre-reqs here");
+        preReqsText.setStroke(Color.RED);
         coReqsText = new Text("Co-reqs here");
+        coReqsText.setStroke(Color.ORANGE);
         formatButton();
 
         vBox.setBackground(new Background(new BackgroundFill(Color.BEIGE, null, null)));
-        vBox.getChildren().addAll(courseCodeTxt, creditsTxt, notesTxt, preReqsText, coReqsText, editBtn);
+        vBox.getChildren().addAll(courseIdTxt, creditsTxt, notesTxt, preReqsText, coReqsText, editBtn);
     }
 
     private void formatButton() {
@@ -87,7 +86,7 @@ public class CourseNode extends BoardComponent {
     }
 
     private void initCourseCodeTxt() {
-        courseCodeTxt = new Text("ID: " + course.getId());
+        courseIdTxt = new Text("ID: " + course.getId());
     }
 
     private void formatDescripFlow() {
@@ -96,42 +95,30 @@ public class CourseNode extends BoardComponent {
         tf.maxWidthProperty().bind(vBox.widthProperty().subtract(H_PAD*2));
     }
 
-
-    public void doubleClickEditCourse() {
-        setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if(event.getClickCount() == 2) {
-                    EditCourseWindow ew = new EditCourseWindow(null);
-                }
-            }
-        });
-    }
-
     public Course getCourse() {
         return course;
     }
 
-
-    public String getCourseCodeTxt() {
-        return courseCodeTxt.getText();
+    public String getCourseId() {
+        return courseIdTxt.getText();
     }
 
-    public void setCourseCodeTxt(String courseCodeTxt) {
-        this.courseCodeTxt.setText(courseCodeTxt);
+    public void setCourseId(String courseCodeTxt) {
+        this.courseIdTxt.setText(courseCodeTxt);
     }
 
     public void displayMissing(String miss) {
-//        todo appends a text onto course with name of missingCourse and colorcoded by type (coreq/prereq)
+//        todo appends a text onto course with name of MISSING ONLY and colorcoded by type (coreq/prereq)
+        preReqsText.setText(course.getPrereqDisplayString());
+        coReqsText.setText(course.getCoreqDisplayString());
     }
 
     public void updateDisplay() {
 //        todo updates fields according to course data
-        courseCodeTxt.setText(course.getId());
+        courseIdTxt.setText(course.getId());
         creditsTxt.setText(Integer.toString(course.getCredits()));
-        preReqsText.setText(course.getPrereqString());
-        coReqsText.setText(course.getCoreqString());
+        preReqsText.setText(course.getPrereqDisplayString());
+        coReqsText.setText(course.getCoreqDisplayString());
     }
-
 
 }
