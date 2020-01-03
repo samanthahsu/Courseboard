@@ -80,11 +80,11 @@ public class Course {
         return coreq;
     }
 
-    public String getPrereqDisplayString() {
+    public String getAllPrereqDisplayString() {
         return prereq.toDisplayString();
     }
 
-    public String getCoreqDisplayString() {
+    public String getAllCoreqDisplayString() {
         return coreq.toDisplayString();
     }
 

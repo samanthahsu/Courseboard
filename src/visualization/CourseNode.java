@@ -13,6 +13,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import model.Course;
 
+import java.util.List;
 import java.util.Set;
 
 public class CourseNode extends BoardComponent {
@@ -120,16 +121,19 @@ public class CourseNode extends BoardComponent {
 //            so if the courses in this list are not on the list of the general manager, we save those and display them with text
 //          otherwise, update the connections to connect this node to other required ones
 //        todo MOVE THAT PART HIGHER UP TO CONNECTION MANAGER
-        preReqsText.setText(course.getPrereqDisplayString());
-        coReqsText.setText(course.getCoreqDisplayString());
+        preReqsText.setText(course.getAllPrereqDisplayString());
+        coReqsText.setText(course.getAllCoreqDisplayString());
     }
 
     public void updateDisplay() {
-//        todo updates fields according to course data
+        boardManager.addCourseUpdate(this); // here because should always happen before (make sure missing is init)
+
         courseIdTxt.setText(course.getId());
         creditsTxt.setText(Integer.toString(course.getCredits()));
-        preReqsText.setText(course.getPrereqDisplayString());
-        coReqsText.setText(course.getCoreqDisplayString());
+        CourseList courseList = new CourseList(boardManager.missingCourseIds.get(this), CourseList.PRE_REQ);
+//        todo ^^ list returned by hashmap is null because this is first time it is called
+        preReqsText.setText(courseList.toDisplayString());
+        coReqsText.setText(course.getAllCoreqDisplayString());
         updateBoard();
     }
 

@@ -38,11 +38,11 @@ public class MainWindow extends Application {
 
         boardManager = new BoardManager(pane);
 
-        LinkedList<String> prereqList = new LinkedList<>();
-        prereqList.add("MATH100");
-        boardManager.addCourse(new Course("CPSC121", "", 0, prereqList, new LinkedList<>()));
+//        LinkedList<String> prereqList = new LinkedList<>();
+//        prereqList.add("MATH100");
+//        boardManager.addCourse(new Course("CPSC121", "", 0, prereqList, new LinkedList<>()));
 
-        boardManager.addCourse(new Course("MATH100"));
+//        boardManager.addCourse(new Course("MATH100"));
 
 //        pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
 //            @Override
@@ -73,7 +73,7 @@ public class MainWindow extends Application {
         root.getChildren().addAll(menuBar, pane);
 
         primaryStage.setResizable(true);
-        primaryStage.setScene(new Scene(root, 1024, 1024));
+        primaryStage.setScene(new Scene(root, 1024, 800));
         primaryStage.setTitle("Testing...");
         primaryStage.sizeToScene();
         primaryStage.show();
@@ -82,13 +82,16 @@ public class MainWindow extends Application {
     private MenuBar initMenuBar() {
         MenuBar menuBar = new MenuBar();
         menuBar.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, null, null)));
-        Menu menuFile = new Menu("File");
-        MenuItem newItem = new MenuItem("New...");
-        MenuItem openItem = new MenuItem("Open...");
-        MenuItem saveItem = new MenuItem("Save");
-        MenuItem saveAsItem = new MenuItem("Save As...");
-        menuFile.getItems().addAll(newItem, openItem, saveAsItem, saveItem);
 
+        Menu menuFile = initMenuFile();
+        Menu menuEdit = initMenuEdit();
+
+        menuBar.getMenus().addAll(menuFile, menuEdit);
+        menuBar.toFront();
+        return menuBar;
+    }
+
+    private Menu initMenuEdit() {
         Menu menuEdit = new Menu("Edit");
         MenuItem addTerm = new MenuItem("Add Term");
         MenuItem addCourse = new MenuItem("Add Course");
@@ -100,10 +103,17 @@ public class MainWindow extends Application {
         });
         MenuItem clearAll = new MenuItem("Clear All");
         menuEdit.getItems().addAll(addTerm, addCourse, clearAll);
+        return menuEdit;
+    }
 
-        menuBar.getMenus().addAll(menuFile, menuEdit);
-        menuBar.toFront();
-        return menuBar;
+    private Menu initMenuFile() {
+        Menu menuFile = new Menu("File");
+        MenuItem newItem = new MenuItem("New...");
+        MenuItem openItem = new MenuItem("Open...");
+        MenuItem saveItem = new MenuItem("Save");
+        MenuItem saveAsItem = new MenuItem("Save As...");
+        menuFile.getItems().addAll(newItem, openItem, saveAsItem, saveItem);
+        return menuFile;
     }
 
 }

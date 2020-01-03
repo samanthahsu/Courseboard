@@ -1,13 +1,13 @@
 package visualization;
 
 import Exceptions.*;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import model.Course;
@@ -15,8 +15,8 @@ import model.Course;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-//todo common to both adding and editing courses
-public class CourseWindow extends Stage {
+// todo common to both adding and editing courses
+public abstract class CourseWindow extends Stage {
 
     static final String REQUISITE_COURSE_ID_SPLITTOR = ", ";
 
@@ -28,18 +28,29 @@ public class CourseWindow extends Stage {
     protected TextField prereqText;
     protected TextField coreqText;
     protected Button submitBtn;
+//    ^^ these are initialized by caller
 
     public CourseWindow(CourseNode cn) {
         super();
         this.courseNode = cn;
+        formatAndShow();
     }
 
     protected void formatAndShow() {
         setScene(new Scene(gridPane, 500, 500));
+        initTitle();
+        initTextFields();
+        initButton();
+        formatGridpane();
+        setButtonHandler();
         sizeToScene();
         show();
-
     }
+
+//    post: all textfields are initialized
+    abstract protected void initTextFields();
+    abstract protected void initButton();
+    abstract protected void initTitle();
 
     protected void formatGridpane() {
         gridPane.setPadding(new Insets(10));
@@ -64,16 +75,15 @@ public class CourseWindow extends Stage {
     }
 
     protected void setButtonHandler() {
-        submitBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        submitBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
-            public void handle(MouseEvent event) {
+            public void handle(ActionEvent event) {
                 try {
-                    updateCourseInfoGuard();
+                    updateCourseInfo();
                     courseNode.updateDisplay();
                     close();
                 } catch (BadCourseCodeException e) {
                     courseCodeText.requestFocus();
-//                   todo highlight corresponding text things
                 } catch (BadCreditException e) {
                     creditsText.requestFocus();
                 } catch (BadPrereqException e) {
@@ -87,7 +97,8 @@ public class CourseWindow extends Stage {
         });
     }
 
-    protected boolean updateCourseInfoGuard() throws CourseInputException {
+//    when called updates course info and also boardmanager
+    protected boolean updateCourseInfo() throws CourseInputException {
         String courseCode = courseCodeText.getText();
         String credits = creditsText.getText();
         String prereqs = prereqText.getText();
@@ -102,12 +113,11 @@ public class CourseWindow extends Stage {
         } else if (!coreqs.matches(".*(\\w| )*.*")) {
             throw new BadCoreqException();
         }
-        updateCourseInfo(courseCode, credits, prereqs, coreqs);
-//        updateConnections();TODO
+        updateCourseInfoHelper(courseCode, credits, prereqs, coreqs);
         return true;
     }
 
-    protected void updateCourseInfo(String courseCode, String credits, String prereqs, String coreqs) {
+    protected void updateCourseInfoHelper(String courseCode, String credits, String prereqs, String coreqs) {
         Course course = courseNode.getCourse();
         course.setId(courseCode);
         course.setCredits(Integer.parseInt(credits));
@@ -116,6 +126,9 @@ public class CourseWindow extends Stage {
         course.setPreReq(prereqList);
         LinkedList<String> coreqList = new LinkedList<String>(Arrays.asList(coreqs.split(REQUISITE_COURSE_ID_SPLITTOR)));
         course.setCoReq(coreqList);
+//        todo should update stuff in boardManager (the missing course list and all)
+//        courseNode.getBoardManager().addCourseUpdate(courseNode);
+        System.out.println(prereqList);
     }
 
 }
