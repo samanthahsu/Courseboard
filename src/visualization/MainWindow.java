@@ -22,7 +22,6 @@ public class MainWindow extends Application {
     public final static char PRE_REQ_TYPE = 'p';
     public final static char CO_REQ_TYPE = 'c';
 
-    GeneralManager generalManager = new GeneralManager();
     BoardManager boardManager;
 //    todo enable saving and loading for display config and data classes: so course, term, course manager, nodes and stuff
 //    todo also probably best to save the pane as well, to avoid recompiling
@@ -34,9 +33,8 @@ public class MainWindow extends Application {
         VBox root = new VBox();
         MenuBar menuBar = initMenuBar();
 
-        Board pane = new Board();
-
-        boardManager = new BoardManager(pane);
+        Board board = new Board();
+        boardManager = new BoardManager(board);
 
 //        LinkedList<String> prereqList = new LinkedList<>();
 //        prereqList.add("MATH100");
@@ -53,7 +51,7 @@ public class MainWindow extends Application {
 //            }
 //        });
 
-//      todo figure out how to place the different nodes using calculations
+//           todo figure out how to place the different nodes using calculations
 //        CourseNode node1 = new CourseNode(new Course("hi", "edefdsfd", 3, null, null));
 //        node1.relocate(50,50);
 //
@@ -70,11 +68,11 @@ public class MainWindow extends Application {
 
 //        pane.getChildren().addAll(conn, node1, node2, node3, term1);
 
-        root.getChildren().addAll(menuBar, pane);
+        root.getChildren().addAll(menuBar, board);
 
         primaryStage.setResizable(true);
         primaryStage.setScene(new Scene(root, 1024, 800));
-        primaryStage.setTitle("Testing...");
+        primaryStage.setTitle("Courseboard");
         primaryStage.sizeToScene();
         primaryStage.show();
     }

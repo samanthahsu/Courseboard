@@ -15,7 +15,7 @@ public class Board extends Pane {
 //    make pane in pane
 //    inner pane holds all the course info
 //    outer pane makes sure that coordinates remain consistent
-//      the draggs are calculated using the outer pane
+//      the drags are calculated using the outer pane
 
     Pane innerPane = new Pane();
     final static double MIN_SCALE = 0.1;

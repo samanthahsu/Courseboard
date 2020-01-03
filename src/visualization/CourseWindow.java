@@ -97,7 +97,8 @@ public abstract class CourseWindow extends Stage {
         });
     }
 
-//    when called updates course info and also boardmanager
+//    checks for valid input - highlighting if not valid
+//    if ok @updateCourseInfoHelper
     protected boolean updateCourseInfo() throws CourseInputException {
         String courseCode = courseCodeText.getText();
         String credits = creditsText.getText();
@@ -117,6 +118,7 @@ public abstract class CourseWindow extends Stage {
         return true;
     }
 
+//    updates course inside the node using info from fields
     protected void updateCourseInfoHelper(String courseCode, String credits, String prereqs, String coreqs) {
         Course course = courseNode.getCourse();
         course.setId(courseCode);
@@ -127,8 +129,9 @@ public abstract class CourseWindow extends Stage {
         LinkedList<String> coreqList = new LinkedList<String>(Arrays.asList(coreqs.split(REQUISITE_COURSE_ID_SPLITTOR)));
         course.setCoReq(coreqList);
 //        todo should update stuff in boardManager (the missing course list and all)
-//        courseNode.getBoardManager().addCourseUpdate(courseNode);
-        System.out.println(prereqList);
+        updateBoardManager();
     }
+
+    protected abstract void updateBoardManager();
 
 }

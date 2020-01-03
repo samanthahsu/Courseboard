@@ -29,5 +29,10 @@ public class EditCourseWindow extends CourseWindow {
     protected void initTitle() {
         setTitle("Editing Course");
     }
+
+    @Override
+    protected void updateBoardManager() {
+        courseNode.getBoardManager().editCourseUpdate(courseNode);
+    }
 }
 

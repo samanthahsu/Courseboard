@@ -27,4 +27,9 @@ public class AddCourseWindow extends CourseWindow {
     protected void initTitle() {
         setTitle("Adding Course");
     }
+
+    @Override
+    protected void updateBoardManager() {
+        courseNode.getBoardManager().addCourseUpdate(courseNode);
+    }
 }

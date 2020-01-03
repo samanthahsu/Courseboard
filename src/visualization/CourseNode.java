@@ -47,7 +47,7 @@ public class CourseNode extends BoardComponent {
         updateColors();
         formatVbox();
         makeDraggable();
-        updateDisplay();
+//        updateDisplay();
         getChildren().add(vBox);
     }
 
@@ -116,29 +116,14 @@ public class CourseNode extends BoardComponent {
         this.courseIdTxt.setText(courseCodeTxt);
     }
 
-    public void updateMissingCourses(String miss) {
-//        todo appends a text onto course with name of MISSING ONLY and colorcoded by type (coreq/prereq)
-//            so if the courses in this list are not on the list of the general manager, we save those and display them with text
-//          otherwise, update the connections to connect this node to other required ones
-//        todo MOVE THAT PART HIGHER UP TO CONNECTION MANAGER
-        preReqsText.setText(course.getAllPrereqDisplayString());
-        coReqsText.setText(course.getAllCoreqDisplayString());
-    }
-
+//    REQUIRE: @missingCourseIds has key @this already
+//      @missingCourseIds has been suitably updated
     public void updateDisplay() {
-        boardManager.addCourseUpdate(this); // here because should always happen before (make sure missing is init)
-
         courseIdTxt.setText(course.getId());
         creditsTxt.setText(Integer.toString(course.getCredits()));
         CourseList courseList = new CourseList(boardManager.missingCourseIds.get(this), CourseList.PRE_REQ);
-//        todo ^^ list returned by hashmap is null because this is first time it is called
+//        todo same for coreq
         preReqsText.setText(courseList.toDisplayString());
         coReqsText.setText(course.getAllCoreqDisplayString());
-        updateBoard();
-    }
-
-    public void updateBoard() {
-//        todo notifies cm that things are a changing, and they need to update visuals to match changes in this courseNode
-        boardManager.addCourseUpdate(this);
     }
 }
