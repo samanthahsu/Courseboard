@@ -72,7 +72,7 @@ public class Course {
         this.credits = credits;
     }
 
-    public CourseList getPrereq() {
+    public CourseList getPrereqs() {
         return prereq;
     }
 

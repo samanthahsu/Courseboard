@@ -130,14 +130,11 @@ public class CourseNode extends BoardComponent {
         creditsTxt.setText(Integer.toString(course.getCredits()));
         preReqsText.setText(course.getPrereqDisplayString());
         coReqsText.setText(course.getCoreqDisplayString());
+        updateBoard();
     }
 
     public void updateBoard() {
 //        todo notifies cm that things are a changing, and they need to update visuals to match changes in this courseNode
         boardManager.addCourseUpdate(this);
     }
-//    todo WAIT SO THIS IS ADDING A COURSE, BUT BY DEFAULT ONE IS ADDED WITH EMPTY NAME TO BOARD
-//    SO HOW TO DIFFERENTIATE BETWEEN ADDING A COURSE AND EDITING ONE
-//    OK SO WHEN YOU ADD A COURSE, THERE IS A DIFFERENT BUT SIMILAR MENU
-
 }
