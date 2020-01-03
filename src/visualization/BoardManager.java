@@ -51,9 +51,6 @@ public class BoardManager {
         board.getChildren().add(newConnection);
     }
 
-    public void editCourseUpdate(CourseNode editedNode) {
-//        todo
-    }
 
     private void removeFulfilledAddConnections(CourseNode newNode) {
         for (Map.Entry element : missingCourseIds.entrySet()) {
@@ -69,10 +66,44 @@ public class BoardManager {
         }
     }
 
-    //    TODO here maps missing courses onto course nodes: tells them what to display
-//      also maps on connections as well and draws those
-    public void updateNodeRequisiteCourses(CourseNode existingNode) {
-        existingNode.updateDisplay();
+
+    public void removeCourseUpdate(CourseNode deletedNode) {
+        removeBrokenConnectionsAndAddMissing(deletedNode);
+        missingCourseIds.remove(deletedNode);
+        board.getChildren().remove(deletedNode);
     }
+
+//          get all connections on @board which point to @deletedNode
+//          for each connection update the other corresponding node's missing courses list
+//          get all connections pointed to by the deleted node and kill them dead
+//          delete all the connections
+    private void removeBrokenConnectionsAndAddMissing(CourseNode deletedNode) {
+        Set<Connection> newConnectionSet = new HashSet<>(connectionSet);
+        for (Connection connection : connectionSet) {
+            if (connection.destination == deletedNode) {
+//                modify the source
+                CourseNode existingNode = connection.getSource();
+                List<String> list = missingCourseIds.get(existingNode);
+                list.add(deletedNode.getCourseId());
+
+                newConnectionSet.remove(connection);
+                board.getChildren().remove(connection);
+            } else if (connection.source == deletedNode) {
+//                kill connection
+                newConnectionSet.remove(connection);
+                board.getChildren().remove(connection);
+            }
+        }
+        connectionSet = newConnectionSet;
+    }
+
+
+    //    todo OK we restrict changing the course code because thats unnecc work
+//        remember to eliminate option from edit window
+//      only consider requisites and notes and credits changing
+    public void editCourseUpdate(CourseNode editedNode) {
+//        todo
+    }
+
 
 }

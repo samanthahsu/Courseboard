@@ -107,7 +107,7 @@ public abstract class CourseWindow extends Stage {
 
         if (courseCode.matches(".*\\W.*")) {
             throw new BadCourseCodeException();
-        } else if (!credits.matches("[0-9]*")) {
+        } else if (!credits.matches("\\d\\d*")) {
             throw new BadCreditException();
         } else if (!prereqs.matches(".*(\\w| )*.*")) {
             throw new BadPrereqException();
@@ -128,7 +128,7 @@ public abstract class CourseWindow extends Stage {
         course.setPreReq(prereqList);
         LinkedList<String> coreqList = new LinkedList<String>(Arrays.asList(coreqs.split(REQUISITE_COURSE_ID_SPLITTOR)));
         course.setCoReq(coreqList);
-//        todo should update stuff in boardManager (the missing course list and all)
+
         updateBoardManager();
     }
 

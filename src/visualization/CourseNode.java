@@ -1,9 +1,13 @@
 package visualization;
 
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -13,7 +17,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import model.Course;
 
-import java.util.List;
 import java.util.Set;
 
 public class CourseNode extends BoardComponent {
@@ -30,7 +33,6 @@ public class CourseNode extends BoardComponent {
     private Text creditsTxt;
     private Text preReqsText;
     private Text coReqsText;
-    private Button editBtn;
 
     private Color fillColor = Color.BEIGE;
     private Color borderColor = Color.GRAY;
@@ -47,7 +49,7 @@ public class CourseNode extends BoardComponent {
         updateColors();
         formatVbox();
         makeDraggable();
-//        updateDisplay();
+        createContextMenu();
         getChildren().add(vBox);
     }
 
@@ -69,22 +71,11 @@ public class CourseNode extends BoardComponent {
         preReqsText.setStroke(Color.RED);
         coReqsText = new Text("Co-reqs here");
         coReqsText.setStroke(Color.ORANGE);
-        formatButton();
 
         vBox.setBackground(new Background(new BackgroundFill(Color.BEIGE, null, null)));
-        vBox.getChildren().addAll(courseIdTxt, creditsTxt, notesTxt, preReqsText, coReqsText, editBtn);
+        vBox.getChildren().addAll(courseIdTxt, creditsTxt, notesTxt, preReqsText, coReqsText);
     }
 
-    private void formatButton() {
-        editBtn = new Button("Edit");
-        CourseNode me = this;
-        editBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                new EditCourseWindow(me);
-            }
-        });
-    }
 
     private void formatCreditsTxt() {
         creditsTxt = new Text("Credits: " + Integer.toString(course.getCredits()));
@@ -125,5 +116,33 @@ public class CourseNode extends BoardComponent {
 //        todo same for coreq
         preReqsText.setText(courseList.toDisplayString());
         coReqsText.setText(course.getAllCoreqDisplayString());
+    }
+
+//    the right clicky thing for deletions
+    private void createContextMenu() {
+        ContextMenu contextMenu = new ContextMenu();
+
+        CourseNode thisNode = this;
+        MenuItem deleteItem = new MenuItem("Delete");
+        deleteItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                boardManager.removeCourseUpdate(thisNode);
+            }
+        });
+        MenuItem editItem = new MenuItem("Edit");
+        editItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                new EditCourseWindow(thisNode);
+            }
+        });
+        contextMenu.getItems().addAll(editItem, deleteItem);
+        setOnContextMenuRequested(new EventHandler<ContextMenuEvent>() {
+            @Override
+            public void handle(ContextMenuEvent event) {
+                contextMenu.show(thisNode, event.getScreenX(), event.getScreenY());
+            }
+        });
     }
 }

@@ -29,6 +29,14 @@ public class Connection extends Region implements Observer {
         draw();
     }
 
+    public CourseNode getSource() {
+        return source;
+    }
+
+    public CourseNode getDestination() {
+        return destination;
+    }
+
     public void draw() {
         path = new Path();
         moveTo = new MoveTo();
