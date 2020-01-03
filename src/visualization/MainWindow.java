@@ -23,7 +23,7 @@ public class MainWindow extends Application {
     public final static char CO_REQ_TYPE = 'c';
 
     GeneralManager generalManager = new GeneralManager();
-    ConnectionManager connectionManager;
+    BoardManager boardManager;
 //    todo enable saving and loading for display config and data classes: so course, term, course manager, nodes and stuff
 //    todo also probably best to save the pane as well, to avoid recompiling
 
@@ -34,15 +34,15 @@ public class MainWindow extends Application {
         VBox root = new VBox();
         MenuBar menuBar = initMenuBar();
 
-        MyPane pane = new MyPane();
+        Board pane = new Board();
 
-        connectionManager = new ConnectionManager(pane);
+        boardManager = new BoardManager(pane);
 
         LinkedList<String> prereqList = new LinkedList<>();
         prereqList.add("MATH100");
-        connectionManager.addCourse(new Course("CPSC121", "", 0, prereqList, new LinkedList<>()));
+        boardManager.addCourse(new Course("CPSC121", "", 0, prereqList, new LinkedList<>()));
 
-        connectionManager.addCourse(new Course("MATH100"));
+        boardManager.addCourse(new Course("MATH100"));
 
 //        pane.setOnMouseClicked(new EventHandler<MouseEvent>() {
 //            @Override
@@ -95,7 +95,7 @@ public class MainWindow extends Application {
         addCourse.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                connectionManager.addEmptyCourse();
+                new AddCourseWindow(new CourseNode(new Course(""), boardManager));
             }
         });
         MenuItem clearAll = new MenuItem("Clear All");

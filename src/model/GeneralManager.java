@@ -154,13 +154,14 @@ public class GeneralManager {
 //    OK so each term has a set of courses.
 //    so like component, branch and leaf
 //    courseNode is the leaf, and term is the branch
-    public boolean addCourse(Pane pane, MouseEvent event) {
-        Course newCourse = new Course("");
-        CourseNode cn = new CourseNode(newCourse);
-        cn.relocate(event.getX(), event.getY());
-        pane.getChildren().add(cn);
-        return true;
-    }
+
+//    public boolean addCourse(Pane pane, MouseEvent event) {
+//        Course newCourse = new Course("");
+//        CourseNode cn = new CourseNode(newCourse, );
+//        cn.relocate(event.getX(), event.getY());
+//        pane.getChildren().add(cn);
+//        return true;
+//    }
 
 //    need to order the terms in a solid way
 //    need some way to add stuff in order

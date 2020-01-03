@@ -37,8 +37,11 @@ public class CourseNode extends BoardComponent {
     private VBox vBox;
     private Course course;
 
+    private BoardManager boardManager;
 
-    public CourseNode(Course c) {
+
+    public CourseNode(Course c, BoardManager boardManager) {
+        this.boardManager = boardManager;
         course = c;
         updateColors();
         formatVbox();
@@ -100,6 +103,10 @@ public class CourseNode extends BoardComponent {
         return course;
     }
 
+    public BoardManager getBoardManager() {
+        return boardManager;
+    }
+
     public String getCourseId() {
         return courseIdTxt.getText();
     }
@@ -124,5 +131,13 @@ public class CourseNode extends BoardComponent {
         preReqsText.setText(course.getPrereqDisplayString());
         coReqsText.setText(course.getCoreqDisplayString());
     }
+
+    public void updateBoard() {
+//        todo notifies cm that things are a changing, and they need to update visuals to match changes in this courseNode
+        boardManager.addCourseUpdate(this);
+    }
+//    todo WAIT SO THIS IS ADDING A COURSE, BUT BY DEFAULT ONE IS ADDED WITH EMPTY NAME TO BOARD
+//    SO HOW TO DIFFERENTIATE BETWEEN ADDING A COURSE AND EDITING ONE
+//    OK SO WHEN YOU ADD A COURSE, THERE IS A DIFFERENT BUT SIMILAR MENU
 
 }
