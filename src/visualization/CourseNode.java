@@ -37,6 +37,7 @@ public class CourseNode extends BoardComponent {
     private VBox vBox;
     private Course course;
 
+
     public CourseNode(Course c) {
         course = c;
         updateColors();
@@ -107,8 +108,11 @@ public class CourseNode extends BoardComponent {
         this.courseIdTxt.setText(courseCodeTxt);
     }
 
-    public void displayMissing(String miss) {
+    public void updateMissingCourses(String miss) {
 //        todo appends a text onto course with name of MISSING ONLY and colorcoded by type (coreq/prereq)
+//            so if the courses in this list are not on the list of the general manager, we save those and display them with text
+//          otherwise, update the connections to connect this node to other required ones
+//        todo MOVE THAT PART HIGHER UP TO CONNECTION MANAGER
         preReqsText.setText(course.getPrereqDisplayString());
         coReqsText.setText(course.getCoreqDisplayString());
     }

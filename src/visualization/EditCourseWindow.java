@@ -19,22 +19,26 @@ import java.util.LinkedList;
 
 public class EditCourseWindow extends Stage {
 
-//    todo make edit box already have course info stuff from before
+    static final String REQUISITE_COURSE_ID_SPLITTOR = ", ";
+
     Course course = new Course("");
     GridPane gridPane = new GridPane();
     TextField courseCodeText;
-    TextField notes = new TextField();
-    TextField creditsText = new TextField();
-    TextField prereqText = new TextField();
+    TextField notes;
+    TextField creditsText;
+    TextField prereqText;
     TextField coreqText = new TextField();
     Button submitBtn = new Button("Save");
 
+//    todo keep all fields filled in
     EditCourseWindow(CourseNode cn) {
         super();
         course = cn.getCourse();
         courseCodeText = new TextField(course.getId());
         notes = new TextField(course.getNotes());
         creditsText = new TextField(Integer.toString(course.getCredits()));
+        prereqText = new TextField(course.getPrereqDisplayString());
+        coreqText = new TextField(course.getCoreqDisplayString());
         setTitle("Editing Course");
         gridPane.setPadding(new Insets(10));
         gridPane.setHgap(10);
@@ -60,7 +64,7 @@ public class EditCourseWindow extends Stage {
             public void handle(MouseEvent event) {
 //                todo check for valid inputs
                 try {
-                    updateCourseInfo();
+                    updateCourseInfoGuard();
                     cn.updateDisplay();
                     close();
                 } catch (BadCourseCodeException e) {
@@ -82,7 +86,7 @@ public class EditCourseWindow extends Stage {
         show();
     }
 
-    private boolean updateCourseInfo() throws CourseInputException {
+    private boolean updateCourseInfoGuard() throws CourseInputException {
         String courseCode = courseCodeText.getText();
         String credits = creditsText.getText();
         String prereqs = prereqText.getText();
@@ -98,14 +102,22 @@ public class EditCourseWindow extends Stage {
             throw new BadCoreqException();
         }
 
+        updateCourseInfo(courseCode, credits, prereqs, coreqs);
+        return true;
+    }
+
+//    todo course should not know about any other course existence
+//      but courseNode SHOULD know about which ones are missing -- keep a list in courseNode of the missing ones
+//      alt. just check each time and compare new list to list of all courses in the manager
+
+    private void updateCourseInfo(String courseCode, String credits, String prereqs, String coreqs) {
         course.setId(courseCode);
         course.setCredits(Integer.parseInt(credits));
         course.setNotes("");
-        LinkedList<String> prereqList = new LinkedList<String>(Arrays.asList(prereqs.split(" ")));
+        LinkedList<String> prereqList = new LinkedList<String>(Arrays.asList(prereqs.split(REQUISITE_COURSE_ID_SPLITTOR)));
         course.setPreReq(prereqList);
-        LinkedList<String> coreqList = new LinkedList<String>(Arrays.asList(coreqs.split(" ")));
+        LinkedList<String> coreqList = new LinkedList<String>(Arrays.asList(coreqs.split(REQUISITE_COURSE_ID_SPLITTOR)));
         course.setCoReq(coreqList);
-        return true;
     }
 }
 

@@ -7,9 +7,10 @@ import java.util.*;
 
 public class ConnectionManager {
 
-    Set<Connection> connectionSet = new HashSet<>();
-    Map<CourseNode, String> missing = new HashMap<>();
-    Set<CourseNode> allCrsNodes = new HashSet<>();
+    Set<Connection> connectionSet = new HashSet<>(); // todo this keeps track of the valid reqs we have
+    Map<CourseNode, List<String>> missingCourseIds = new HashMap<>(); // map of the course wishlist of each course
+//    todo list of course string, which is obj that extends string and has whether
+    Set<CourseNode> allCrsNodes = new HashSet<>(); // todo not necc (already contained inside wishlist)
 
     Pane pane;
 
@@ -22,24 +23,27 @@ public class ConnectionManager {
         pane.getChildren().addAll(connectionSet);
     }
 
-    public void removeUpdate() {
-
+    public void removeCourseUpdate() {
     }
+
 //   updates set based on removal or addition of a course
 //    todo add called area
-    public void addUpdate(CourseNode newNode) {
+    public void addCourseUpdate(CourseNode newNode) {
 
-        for (Map.Entry element : missing.entrySet()) {
-            String m = (String) element.getValue();
-            if (m.equals(newNode.getCourse().getId())) {
+//      find and remove the missing courses that are no longer missing because addition of newNode
+//            also adds new connection representing the dependency on newNode
+        for (Map.Entry element : missingCourseIds.entrySet()) {
+            List<String> m = (List<String>) element.getValue();
+            if (m.contains(newNode.getCourse().getId())) {
                 Connection e = new Connection((CourseNode) element.getKey(), newNode);
                 connectionSet.add(e);
-                missing.remove(element.getKey());
+                m.remove(newNode.getCourse().getId());
                 pane.getChildren().add(e);
             }
         }
 
-//        todo add same thing for coreqs later
+//        todo add same thing for coreqs
+//        makes new list of courses required by newNode, then add newNode and it's list to the missing courses list
         List<String> newPrereqs = newNode.getCourse().getPrereq();
         for (String req : newPrereqs) {
             for (CourseNode existingNode : allCrsNodes) {
@@ -52,32 +56,29 @@ public class ConnectionManager {
                 }
             }
         }
-
-        for (String p : newPrereqs) {
-            missing.put(newNode, p);
-        }
-
+        missingCourseIds.put(newNode, newPrereqs); // add new course to missing course map
     }
 
-    public void displayMissing() {
-        for (Map.Entry element : missing.entrySet()) {
+//    TODO here maps missing courses onto course nodes: tells them what to display
+//      also maps on connections as well and draws those
+    public void updateNodeRequisiteCourses() {
+        for (Map.Entry element : missingCourseIds.entrySet()) {
             CourseNode key = (CourseNode) element.getKey();
             String miss = (String) element.getValue();
-            key.displayMissing(miss);
+            key.updateMissingCourses(miss);
         }
-
     }
 
     public void addEmptyCourse() {
         CourseNode newNode = new CourseNode(new Course(""));
-        addUpdate(newNode);
+        addCourseUpdate(newNode);
         allCrsNodes.add(newNode);
         pane.getChildren().add(newNode);
     }
 
     public void addCourse(Course course) {
         CourseNode newNode = new CourseNode(course);
-        addUpdate(newNode);
+        addCourseUpdate(newNode);
         allCrsNodes.add(newNode);
         pane.getChildren().add(newNode);
     }
