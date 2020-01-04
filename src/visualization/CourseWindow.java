@@ -37,7 +37,7 @@ public abstract class CourseWindow extends Stage {
     }
 
     protected void formatAndShow() {
-        setScene(new Scene(gridPane, 500, 500));
+        setScene(new Scene(gridPane));
         initTitle();
         initTextFields();
         initButton();

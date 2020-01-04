@@ -1,5 +1,7 @@
 package visualization;
 
+import model.Term;
+
 import java.util.*;
 
 public class BoardManager {
@@ -106,4 +108,22 @@ public class BoardManager {
     }
 
 
+    public void clearAll() {
+//        everything dies
+//        todo alert before doing this
+        connectionSet.clear();
+        missingCourseIds.clear();
+        board.getChildren().clear();
+    }
+
+    public void addTerm(String termName) {
+//        todo
+        TermNode newTerm = new TermNode(termName, this);
+        board.getChildren().add(newTerm);
+    }
+
+    public void removeTerm(TermNode deletedTerm) {
+//        todo set all its children courses at the current position (get current then set after removal from container and dumping into pane)
+        board.getChildren().remove(deletedTerm);
+    }
 }
