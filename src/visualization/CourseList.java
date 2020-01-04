@@ -1,9 +1,10 @@
 package visualization;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
-public class CourseList extends LinkedList<String> {
+public class CourseList extends LinkedList<String> implements Serializable {
 
     public final static char PRE_REQ = 'p';
     public final static char CO_REQ = 'c';

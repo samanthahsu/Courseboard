@@ -2,10 +2,11 @@ package model;
 
 import visualization.CourseList;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Objects;
 
-public class Course {
+public class Course implements Serializable {
 // there should be one unique course per course ID, the same pre-reqs and same co-reqs
 
     String id = "ID";

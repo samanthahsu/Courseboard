@@ -7,23 +7,25 @@ import javafx.geometry.Pos;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.ContextMenuEvent;
+import javafx.scene.input.DragEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import model.Term;
 
-//todo make this work????
 public class TermNode extends BoardComponent {
 
-    GridPane gridPane;
-    Text title;
-    VBox vBox;
-    Term term;
-    BoardManager boardManager;
+    private GridPane gridPane;
+    private static final int MAX_GP_WIDTH = 3;
+    private int nextAvailRow = 0;
+    private int nextAvailCol = 0;
+    private Text title;
+    private VBox vBox;
+    private Term term;
+    private BoardManager boardManager;
 
     TermNode(String name, BoardManager boardManager) {
         this.boardManager = boardManager;
@@ -33,23 +35,13 @@ public class TermNode extends BoardComponent {
         title = new Text(name);
         gridPane = new GridPane();
         makeDraggable();
-
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 2; j++) {
-                Rectangle filler = new Rectangle(100, 100, Color.BEIGE);
-                filler.setStroke(Color.DARKRED);
-                gridPane.setGridLinesVisible(true);
-                gridPane.add(filler, i, j, 1, 1);
-
-            }
-        }
-
+        setDataTransferable();
         createContextMenu();
 
         vBox.getChildren().addAll(title, gridPane);
         vBox.setPadding(new Insets(10));
         vBox.setSpacing(10);
-        vBox.setBackground(new Background(new BackgroundFill(Color.BEIGE, null, null)));
+        vBox.setBackground(new Background(new BackgroundFill(Color.CORNFLOWERBLUE, null, null)));
         getChildren().add(vBox);
 //        todo make the course node on top of the term ones
 //        todo when a course is dragged in,
@@ -87,6 +79,37 @@ public class TermNode extends BoardComponent {
         });
     }
 
+    public void setDataTransferable() {
+        TermNode thisNode = this;
+        setOnDragOver(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                boardManager.dumpCourseNodeToTerm(thisNode, event);
+            }
+        });
+        setOnDragDropped(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                boardManager.dragDropped(thisNode, event);
+            }
+        });
+        setOnDragDone(new EventHandler<DragEvent>() {
+            @Override
+            public void handle(DragEvent event) {
+                boardManager.dragDone(thisNode, event);
+            }
+        });
+    }
 
 
+    public void addToGrid(CourseNode courseNode) {
+        gridPane.add(courseNode, nextAvailCol, nextAvailRow);
+
+        if (nextAvailCol == MAX_GP_WIDTH - 1) {
+            nextAvailCol = 0;
+            nextAvailRow++;
+        } else {
+            nextAvailCol++;
+        }
+    }
 }

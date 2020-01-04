@@ -1,10 +1,12 @@
 package visualization;
 
-import model.Term;
+import javafx.scene.input.*;
 
 import java.util.*;
 
-public class BoardManager {
+public class BoardManager  {
+
+    static final DataFormat COURSE_NODE = new DataFormat("Course_Node");
 
     Set<Connection> connectionSet = new HashSet<>(); // todo this keeps track of the valid connections (fulfilled requisites) we have
     Map<CourseNode, List<String>> missingCourseIds = new HashMap<>(); // map of the course wish-list of each course
@@ -13,6 +15,8 @@ public class BoardManager {
 
     BoardManager(Board board) {
         this.board = board;
+
+
     }
 
 //   updates set based on removal or addition of a course
@@ -125,5 +129,43 @@ public class BoardManager {
     public void removeTerm(TermNode deletedTerm) {
 //        todo set all its children courses at the current position (get current then set after removal from container and dumping into pane)
         board.getChildren().remove(deletedTerm);
+    }
+
+    public void addCourseNodeToDragBoard(CourseNode courseNode, MouseEvent event) {
+        Dragboard dragboard = courseNode.startDragAndDrop(TransferMode.COPY_OR_MOVE);
+
+        ClipboardContent content = new ClipboardContent();
+        content.put(COURSE_NODE, courseNode);
+
+        dragboard.setContent(content);
+        event.consume();
+    }
+
+    public void dumpCourseNodeToTerm(TermNode termNode, DragEvent event) {
+        if (event.getGestureSource() != termNode && event.getDragboard().hasContent(COURSE_NODE)) {
+            event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+        }
+        event.consume();
+    }
+    public void dragDropped(TermNode termNode, DragEvent event) {
+        boolean dragCompleted = false;
+        Dragboard dragboard = event.getDragboard();
+        if (dragboard.hasContent(COURSE_NODE)) {
+            CourseNode courseNode = (CourseNode) dragboard.getContent(COURSE_NODE);
+            termNode.addToGrid(courseNode);
+            dragCompleted = true;
+        }
+        event.setDropCompleted(dragCompleted);
+        event.consume();
+    }
+
+    public void dragDone(TermNode termNode, DragEvent event) {
+        TransferMode tm = event.getTransferMode();
+
+        if (tm == TransferMode.MOVE) {
+            CourseNode courseNode = (CourseNode) event.getDragboard().getContent(COURSE_NODE);
+            board.getChildren().remove(courseNode);
+        }
+        event.consume();
     }
 }

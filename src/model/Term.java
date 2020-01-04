@@ -1,12 +1,11 @@
 package model;
 
-import javafx.scene.layout.HBox;
-
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 //holds up to 20 courses
-public class Term extends HBox {
+public class Term implements Serializable {
 
     static final int MAX = 20;
     private String name;

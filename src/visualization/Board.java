@@ -10,6 +10,8 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
+import java.io.Serializable;
+
 public class Board extends Pane {
 //    todo make custom zoomable
 //    make pane in pane

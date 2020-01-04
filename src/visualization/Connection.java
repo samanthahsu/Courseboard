@@ -3,6 +3,7 @@ package visualization;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.*;
 
+import java.io.Serializable;
 import java.util.Observable;
 
 public class Connection extends Region implements Observer {

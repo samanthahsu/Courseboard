@@ -40,6 +40,7 @@ public class MainWindow extends Application {
         primaryStage.show();
     }
 
+//    todo somehow keep menuBar on top of everything
     private MenuBar initMenuBar() {
         MenuBar menuBar = new MenuBar();
         menuBar.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, null, null)));
