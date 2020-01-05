@@ -1,18 +1,21 @@
 package visualization;
 
 import javafx.scene.input.*;
+import javafx.scene.paint.Color;
 import model.Course;
 
 import java.util.*;
 
 public class BoardManager  {
 //  todo make custom global variable for dragboard
+//        need separate the drag stuff from boardcomponent
     static final DataFormat COURSE_INFO = new DataFormat("Course");
 
     Set<Connection> connectionSet = new HashSet<>(); // todo this keeps track of the valid connections (fulfilled requisites) we have
     Map<CourseNode, List<String>> missingCourseIds = new HashMap<>(); // map of the course wish-list of each course
 
     Board board;
+    CourseNode draggedCourseNode;
 
     BoardManager(Board board) {
         this.board = board;
@@ -30,7 +33,7 @@ public class BoardManager  {
 //            also adds new connection representing the dependency on newNode
         removeFulfilledAddConnections(newNode);
         addNewNodeToMap(newNode);
-        board.getChildren().add(newNode); //TODO ADDED HERE
+        board.getChildren().add(newNode);
     }
 
     private void addNewNodeToMap(CourseNode newNode) {
@@ -132,41 +135,41 @@ public class BoardManager  {
         board.getChildren().remove(deletedTerm);
     }
 
-    public void addCourseNodeToDragBoard(CourseNode courseNode, MouseEvent event) {
-        Dragboard dragboard = courseNode.startDragAndDrop(TransferMode.COPY_OR_MOVE);
-
-        ClipboardContent content = new ClipboardContent();
-        content.put(COURSE_INFO, courseNode);
-
-        dragboard.setContent(content);
-        event.consume();
+    public void onDragDetectedCourseNode(CourseNode courseNode, MouseEvent event) {
+//        Dragboard db = courseNode.startDragAndDrop(TransferMode.COPY_OR_MOVE);
+//        ClipboardContent cc = new ClipboardContent();
+//        cc.putString("Something");
+//        db.setContent(cc);
+        draggedCourseNode = courseNode;
     }
 
-    public void dumpCourseNodeToTerm(TermNode termNode, DragEvent event) {
-        if (event.getGestureSource() != termNode && event.getDragboard().hasContent(COURSE_INFO)) {
-            event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+    public void onDragOverTerm(TermNode termNode, MouseDragEvent event) {
+        if (event.getGestureSource() != termNode && draggedCourseNode != null) {
+            termNode.selectionGlowOn();
+            System.out.println("hi");
         }
         event.consume();
     }
-    public void dragDropped(TermNode termNode, DragEvent event) {
+    public void dragDropped(TermNode termNode, MouseDragEvent event) {
         boolean dragCompleted = false;
-        Dragboard dragboard = event.getDragboard();
-        if (dragboard.hasContent(COURSE_INFO)) {
-            Course course = (Course) dragboard.getContent(COURSE_INFO);
-            termNode.addToGrid(new CourseNode(course, this));
+//        Dragboard dragboard = event.getDragboard();
+        if (draggedCourseNode != null) {
+//            Course course = (Course) dragboard.getContent(COURSE_INFO);
+            termNode.addToGrid(draggedCourseNode);
             dragCompleted = true;
         }
-        event.setDropCompleted(dragCompleted);
+//        event.setDropCompleted(dragCompleted);
         event.consume();
     }
 
-    public void dragDone(TermNode termNode, DragEvent event) {
-        TransferMode tm = event.getTransferMode();
+    public void dragDone(TermNode termNode, MouseDragEvent event) {
 
-        if (tm == TransferMode.MOVE) {
-            Course course = (Course) event.getDragboard().getContent(COURSE_INFO);
-            board.getChildren().remove(new CourseNode(course, this)); // todo make equals override
-        }
-        event.consume();
+////        TransferMode tm = event.getTransferMode();
+//
+//        if (tm == TransferMode.MOVE) {
+////            Course course = (Course) event.getDragboard().getContent(COURSE_INFO);
+//            board.getChildren().remove(new CourseNode(course, this)); // todo make equals override
+//        }
+//        event.consume();
     }
 }

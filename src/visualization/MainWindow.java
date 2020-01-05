@@ -7,12 +7,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import model.Course;
+
+import java.awt.*;
 
 public class MainWindow extends Application {
 
@@ -33,6 +38,10 @@ public class MainWindow extends Application {
         Board board = new Board();
         boardManager = new BoardManager(board);
         root.getChildren().addAll(menuBar, board);
+
+
+
+
 
         primaryStage.setScene(new Scene(root, 1024, 800));
         primaryStage.setTitle("Courseboard");

@@ -6,6 +6,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -35,7 +36,6 @@ public class CourseNode extends BoardComponent {
 
     private Color fillColor = Color.BEIGE;
     private Color borderColor = Color.GRAY;
-    private Set<CourseNode> dependencies;
     private VBox vBox;
     private Course course;
 
@@ -49,19 +49,27 @@ public class CourseNode extends BoardComponent {
         formatVbox();
         makeDraggable();
         makeDragDroppable();
+        buildSelectionGlow();
+
         createContextMenu();
         getChildren().add(vBox);
     }
 
     public void  makeDragDroppable() {
         CourseNode thisNode = this;
-        setOnDragDetected(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                boardManager.addCourseNodeToDragBoard(thisNode, event);
-            }
-        });
+//        setOnDragDetected(new EventHandler<MouseEvent>() {
+//            @Override
+//            public void handle(MouseEvent event) {
+//                boardManager.onDragDetectedCourseNode(thisNode, event);
+//            }
+//        });
     }
+
+    @Override
+    public void addCustomOnMouseDragged(MouseEvent event) {
+        boardManager.onDragDetectedCourseNode(this, event);
+    }
+
 
 
     private void updateColors() {

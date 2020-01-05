@@ -8,6 +8,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.DragEvent;
+import javafx.scene.input.MouseDragEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.GridPane;
@@ -37,6 +38,7 @@ public class TermNode extends BoardComponent {
         makeDraggable();
         setDataTransferable();
         createContextMenu();
+        buildSelectionGlow();
 
         vBox.getChildren().addAll(title, gridPane);
         vBox.setPadding(new Insets(10));
@@ -81,21 +83,20 @@ public class TermNode extends BoardComponent {
 
     public void setDataTransferable() {
         TermNode thisNode = this;
-        setOnDragOver(new EventHandler<DragEvent>() {
+
+        setOnMouseDragEntered(new EventHandler<MouseDragEvent>() {
             @Override
-            public void handle(DragEvent event) {
-                boardManager.dumpCourseNodeToTerm(thisNode, event);
+            public void handle(MouseDragEvent event) {
+                boardManager.onDragOverTerm(thisNode, event);
+                System.out.println("im dragged");
+
             }
         });
-        setOnDragDropped(new EventHandler<DragEvent>() {
+        setOnMouseDragReleased(new EventHandler<MouseDragEvent>() {
             @Override
-            public void handle(DragEvent event) {
+            public void handle(MouseDragEvent event) {
+                System.out.println("dragrelessees");
                 boardManager.dragDropped(thisNode, event);
-            }
-        });
-        setOnDragDone(new EventHandler<DragEvent>() {
-            @Override
-            public void handle(DragEvent event) {
                 boardManager.dragDone(thisNode, event);
             }
         });
@@ -111,5 +112,9 @@ public class TermNode extends BoardComponent {
         } else {
             nextAvailCol++;
         }
+    }
+
+    public void setBorder(Color green) {
+        vBox.setBackground(new Background(new BackgroundFill(green, null, null)));
     }
 }
