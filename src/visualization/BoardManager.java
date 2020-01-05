@@ -1,12 +1,13 @@
 package visualization;
 
 import javafx.scene.input.*;
+import model.Course;
 
 import java.util.*;
 
 public class BoardManager  {
-
-    static final DataFormat COURSE_NODE = new DataFormat("Course_Node");
+//  todo make custom global variable for dragboard
+    static final DataFormat COURSE_INFO = new DataFormat("Course");
 
     Set<Connection> connectionSet = new HashSet<>(); // todo this keeps track of the valid connections (fulfilled requisites) we have
     Map<CourseNode, List<String>> missingCourseIds = new HashMap<>(); // map of the course wish-list of each course
@@ -135,14 +136,14 @@ public class BoardManager  {
         Dragboard dragboard = courseNode.startDragAndDrop(TransferMode.COPY_OR_MOVE);
 
         ClipboardContent content = new ClipboardContent();
-        content.put(COURSE_NODE, courseNode);
+        content.put(COURSE_INFO, courseNode);
 
         dragboard.setContent(content);
         event.consume();
     }
 
     public void dumpCourseNodeToTerm(TermNode termNode, DragEvent event) {
-        if (event.getGestureSource() != termNode && event.getDragboard().hasContent(COURSE_NODE)) {
+        if (event.getGestureSource() != termNode && event.getDragboard().hasContent(COURSE_INFO)) {
             event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
         }
         event.consume();
@@ -150,9 +151,9 @@ public class BoardManager  {
     public void dragDropped(TermNode termNode, DragEvent event) {
         boolean dragCompleted = false;
         Dragboard dragboard = event.getDragboard();
-        if (dragboard.hasContent(COURSE_NODE)) {
-            CourseNode courseNode = (CourseNode) dragboard.getContent(COURSE_NODE);
-            termNode.addToGrid(courseNode);
+        if (dragboard.hasContent(COURSE_INFO)) {
+            Course course = (Course) dragboard.getContent(COURSE_INFO);
+            termNode.addToGrid(new CourseNode(course, this));
             dragCompleted = true;
         }
         event.setDropCompleted(dragCompleted);
@@ -163,8 +164,8 @@ public class BoardManager  {
         TransferMode tm = event.getTransferMode();
 
         if (tm == TransferMode.MOVE) {
-            CourseNode courseNode = (CourseNode) event.getDragboard().getContent(COURSE_NODE);
-            board.getChildren().remove(courseNode);
+            Course course = (Course) event.getDragboard().getContent(COURSE_INFO);
+            board.getChildren().remove(new CourseNode(course, this)); // todo make equals override
         }
         event.consume();
     }

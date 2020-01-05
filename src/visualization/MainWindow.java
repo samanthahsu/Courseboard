@@ -39,7 +39,7 @@ public class MainWindow extends Application {
         primaryStage.sizeToScene();
         primaryStage.show();
     }
-
+    
 //    todo somehow keep menuBar on top of everything
     private MenuBar initMenuBar() {
         MenuBar menuBar = new MenuBar();

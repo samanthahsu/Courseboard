@@ -5,7 +5,6 @@ import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +12,7 @@ import java.util.List;
 either a term node or course node
 make used for selection
 */
-class BoardComponent extends Region implements Subject, Serializable {
+class BoardComponent extends Region implements Subject {
 
     private List<Observer> observers = new ArrayList<>();
 

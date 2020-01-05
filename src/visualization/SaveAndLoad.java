@@ -1,7 +1,5 @@
 package visualization;
 
-import java.io.Writer;
-
 public class SaveAndLoad {
 //    todo make object that is serializable to store all component info (javafx node info) to be able to restore layout
 
