@@ -78,10 +78,15 @@ public class BoardManager  {
     }
 
 
+    /** handles removal of a single node
+     * called from node context menu */
     public void removeCourseUpdate(CourseNode deletedNode) {
+
         removeBrokenConnectionsAndAddMissing(deletedNode);
         missingCourseIds.remove(deletedNode);
         boardPane.getChildren().remove(deletedNode);
+
+        facultyListView.update(deletedNode, Operation.REMOVE);
     }
 
 //          get all connections on @board which point to @deletedNode
@@ -126,6 +131,7 @@ public class BoardManager  {
     public void clearAll() {
 //        everything dies
 //        todo alert before doing this
+        facultyListView.clearAll();
         connectionSet.clear();
         missingCourseIds.clear();
         boardPane.getChildren().clear();

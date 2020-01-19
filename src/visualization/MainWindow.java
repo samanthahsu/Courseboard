@@ -42,7 +42,7 @@ public class MainWindow extends Application {
 
 
         primaryStage.setScene(new Scene(root, 1024, 800));
-        primaryStage.setTitle("Courseboard");
+        primaryStage.setTitle("CourseBoard");
         primaryStage.sizeToScene();
         primaryStage.show();
 
