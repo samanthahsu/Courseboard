@@ -21,6 +21,8 @@ public class AddCourseWindow extends CourseWindow {
     @Override
     protected void initButton() {
         submitBtn = new Button("Add Course");
+        submitBtn.setDefaultButton(true); // its beautifullll
+
     }
 
     @Override

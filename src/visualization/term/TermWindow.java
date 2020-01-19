@@ -1,4 +1,4 @@
-package visualization;
+package visualization.term;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import visualization.BoardManager;
 
 public abstract class TermWindow extends Stage {
 

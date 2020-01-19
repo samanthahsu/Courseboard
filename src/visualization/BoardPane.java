@@ -9,7 +9,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 
-public class Board extends Pane {
+public class BoardPane extends Pane {
 //    todo make custom zoomable
 //    make pane in pane
 //    inner pane holds all the course info
@@ -21,9 +21,9 @@ public class Board extends Pane {
     final static double MAX_SCALE = 2;
     DoubleProperty scale = new SimpleDoubleProperty(1.0);
 
-    public Board() {
+    public BoardPane() {
         setPrefSize(1024, 1024);
-        initInnerPane();
+//        initInnerPane();
         getChildren().add(innerPane);
         innerPane.toBack();
     }

@@ -6,7 +6,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.input.ContextMenuEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -16,8 +15,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import model.Course;
-
-import java.util.Set;
 
 public class CourseNode extends BoardComponent {
 
@@ -36,7 +33,7 @@ public class CourseNode extends BoardComponent {
 
     private Color fillColor = Color.BEIGE;
     private Color borderColor = Color.GRAY;
-    private VBox vBox;
+    private VBox mainBody;
     private Course course;
 
     private BoardManager boardManager;
@@ -47,29 +44,20 @@ public class CourseNode extends BoardComponent {
         course = c;
         updateColors();
         formatVbox();
-        makeDraggable();
-        makeDragDroppable();
-        buildSelectionGlow();
-
         createContextMenu();
-        getChildren().add(vBox);
-    }
-
-    public void  makeDragDroppable() {
-        CourseNode thisNode = this;
-//        setOnDragDetected(new EventHandler<MouseEvent>() {
-//            @Override
-//            public void handle(MouseEvent event) {
-//                boardManager.onDragDetectedCourseNode(thisNode, event);
-//            }
-//        });
+        getChildren().add(mainBody);
     }
 
     @Override
     public void addCustomOnMouseDragged(MouseEvent event) {
         boardManager.onDragDetectedCourseNode(this, event);
+        setMouseTransparent(true);
     }
 
+    @Override
+    public void addCustomOnMouseReleased(MouseEvent event) {
+        setMouseTransparent(false);
+    }
 
 
     private void updateColors() {
@@ -77,10 +65,10 @@ public class CourseNode extends BoardComponent {
     }
 
     private void formatVbox() {
-        vBox = new VBox(V_SPAC);
-        vBox.setAlignment(Pos.CENTER);
-        vBox.setPadding(new Insets(V_PAD, H_PAD, V_PAD, H_PAD));
-        vBox.setMinSize(MIN_WIDTH, MIN_HEIGHT);
+        mainBody = new VBox(V_SPAC);
+        mainBody.setAlignment(Pos.CENTER);
+        mainBody.setPadding(new Insets(V_PAD, H_PAD, V_PAD, H_PAD));
+        mainBody.setMinSize(MIN_WIDTH, MIN_HEIGHT);
 
         initCourseCodeTxt();
         formatDescripFlow();
@@ -90,10 +78,9 @@ public class CourseNode extends BoardComponent {
         coReqsText = new Text("Co-reqs here");
         coReqsText.setStroke(Color.ORANGE);
 
-        vBox.setBackground(new Background(new BackgroundFill(Color.BEIGE, null, null)));
-        vBox.getChildren().addAll(courseIdTxt, creditsTxt, notesTxt, preReqsText, coReqsText);
+        mainBody.setBackground(new Background(new BackgroundFill(Color.BURLYWOOD, null, null)));
+        mainBody.getChildren().addAll(courseIdTxt, creditsTxt, notesTxt, preReqsText, coReqsText);
     }
-
 
     private void formatCreditsTxt() {
         creditsTxt = new Text("Credits: " + Integer.toString(course.getCredits()));
@@ -106,7 +93,7 @@ public class CourseNode extends BoardComponent {
     private void formatDescripFlow() {
         notesTxt = new Text(course.getNotes());
         TextFlow tf = new TextFlow(notesTxt);
-        tf.maxWidthProperty().bind(vBox.widthProperty().subtract(H_PAD*2));
+        tf.maxWidthProperty().bind(mainBody.widthProperty().subtract(H_PAD*2));
     }
 
     public Course getCourse() {
@@ -136,7 +123,6 @@ public class CourseNode extends BoardComponent {
         coReqsText.setText(course.getAllCoreqDisplayString());
     }
 
-//    the right clicky thing for deletions
     private void createContextMenu() {
         ContextMenu contextMenu = new ContextMenu();
 

@@ -7,17 +7,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import model.Course;
-
-import java.awt.*;
 
 public class MainWindow extends Application {
 
@@ -32,24 +27,32 @@ public class MainWindow extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        VBox root = new VBox();
+        BorderPane root = new BorderPane();
         MenuBar menuBar = initMenuBar();
 
-        Board board = new Board();
-        boardManager = new BoardManager(board);
-        root.getChildren().addAll(menuBar, board);
+       FacultyListView facList = new FacultyListView();
 
+        BoardPane boardPane = new BoardPane();
+        boardManager = new BoardManager(boardPane, facList);
 
-
+//        place all in border pane
+        root.setTop(menuBar);
+        root.setCenter(boardPane);
+        root.setRight(facList);
 
 
         primaryStage.setScene(new Scene(root, 1024, 800));
         primaryStage.setTitle("Courseboard");
         primaryStage.sizeToScene();
         primaryStage.show();
+
+//        init selection
+        new BoardMouseEventHandler(boardPane);
+
     }
-    
-//    todo somehow keep menuBar on top of everything
+
+
+    //    todo somehow keep menuBar on top of everything
     private MenuBar initMenuBar() {
         MenuBar menuBar = new MenuBar();
         menuBar.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, null, null)));
@@ -64,13 +67,13 @@ public class MainWindow extends Application {
 
     private Menu initMenuEdit() {
         Menu menuEdit = new Menu("Edit");
-        MenuItem addTerm = new MenuItem("Add Term");
-        addTerm.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                new AddTermWindow(boardManager);
-            }
-        });
+//        MenuItem addTerm = new MenuItem("Add Term");
+//        addTerm.setOnAction(new EventHandler<ActionEvent>() {
+//            @Override
+//            public void handle(ActionEvent event) {
+//                new AddTermWindow(boardManager);
+//            }
+//        });
         MenuItem addCourse = new MenuItem("Add Course");
         addCourse.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -85,7 +88,7 @@ public class MainWindow extends Application {
                 boardManager.clearAll();
             }
         });
-        menuEdit.getItems().addAll(addTerm, addCourse, clearAll);
+        menuEdit.getItems().addAll(/*addTerm, */addCourse, clearAll);
         return menuEdit;
     }
 

@@ -7,7 +7,9 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import model.Course;
@@ -23,6 +25,7 @@ public abstract class CourseWindow extends Stage {
     static final String REQUISITE_COURSE_ID_SPLITTOR = ", ";
 
     protected CourseNode courseNode;
+    protected Scene scene;
     protected GridPane gridPane = new GridPane();
     protected TextField courseCodeText;
     protected TextField notes;
@@ -39,7 +42,8 @@ public abstract class CourseWindow extends Stage {
     }
 
     protected void formatAndShow() {
-        setScene(new Scene(gridPane));
+        scene = new Scene(gridPane);
+        setScene(scene);
         initTitle();
         initTextFields();
         initButton();
@@ -76,6 +80,9 @@ public abstract class CourseWindow extends Stage {
         gridPane.add(submitBtn, 0, 5);
     }
 
+/**
+ * checks for input errors before firing
+ * saves entered data and closes window*/
     protected void setButtonHandler() {
         submitBtn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -99,8 +106,9 @@ public abstract class CourseWindow extends Stage {
         });
     }
 
-//    checks for valid input - highlighting if not valid
-//    if ok @updateCourseInfoHelper
+    /**checks for valid input
+     * highlighting if not valid
+     * if ok @updateCourseInfoHelper*/
     protected boolean updateCourseInfo() throws CourseInputException {
         String courseCode = courseCodeText.getText();
         String credits = creditsText.getText();

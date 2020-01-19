@@ -1,7 +1,10 @@
 package visualization;
 
+import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import model.Course;
 
 public class EditCourseWindow extends CourseWindow {
@@ -23,6 +26,14 @@ public class EditCourseWindow extends CourseWindow {
     @Override
     protected void initButton() {
         submitBtn = new Button("Save Edits");
+        submitBtn.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                if (event.getCode().equals(KeyCode.ENTER)) {
+                    submitBtn.fire();
+                }
+            }
+        });
     }
 
     @Override
