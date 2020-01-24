@@ -51,7 +51,6 @@ public class Connection extends Region implements Observer {
     }
 
     public void listen() {
-
     }
 
     public void connect() {

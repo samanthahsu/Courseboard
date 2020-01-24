@@ -12,7 +12,7 @@ import javafx.scene.shape.StrokeLineCap;
 
 import java.util.*;
 
-public class BoardMouseEventHandler {
+public class MouseEventHandler {
 
     final DragOffset dragContext = new DragOffset(0,0);
     static final Color RECT_FILL = new Color(0.6784314f, 0.84705883f, 0.9019608f, 0.5f);
@@ -27,7 +27,7 @@ public class BoardMouseEventHandler {
     List<DragOffset> dragOffsetList;
     SelectionModel selectionModel = new SelectionModel();
 
-    public BoardMouseEventHandler(Pane group) {
+    public MouseEventHandler(Pane group) {
         this.group = group;
 
         rect = new Rectangle( 0,0,0,0);
@@ -174,8 +174,7 @@ public class BoardMouseEventHandler {
     private static class SelectionModel {
 //        todo make private
         List<CourseNode> selection = new ArrayList<>(); // is list to keep delta list matching
-
-        final DropShadow borderGlow = new DropShadow(20, Color.BLUE);
+        final DropShadow borderGlow = new DropShadow(10, Color.DARKBLUE);
 
 
         public void add( CourseNode node) {

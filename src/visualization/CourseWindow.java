@@ -7,9 +7,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import model.Course;
@@ -107,15 +105,16 @@ public abstract class CourseWindow extends Stage {
     }
 
     /**checks for valid input
+     * capitalizes all course codes
      * highlighting if not valid
      * if ok @updateCourseInfoHelper*/
     protected boolean updateCourseInfo() throws CourseInputException {
-        String courseCode = courseCodeText.getText();
+        String courseCode = courseCodeText.getText().toUpperCase();
         String credits = creditsText.getText();
         String prereqs = prereqText.getText();
         String coreqs = coreqText.getText();
 
-        if (courseCode.matches(".*\\W.*")) {
+        if (courseCode.matches(".*\\W.*") && courseCode.length() > 4) {
             throw new BadCourseCodeException();
         } else if (!credits.matches("\\d\\d*")) {
             throw new BadCreditException();

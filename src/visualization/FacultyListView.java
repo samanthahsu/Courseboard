@@ -1,9 +1,6 @@
 package visualization;
 
-import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
-import javafx.scene.text.Text;
-import javafx.util.Callback;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,11 +14,6 @@ public class FacultyListView extends ListView<FacultyListCell> {
 
     FacultyListView() {
         setMaxWidth(200);
-
-//        get deleted after first update
-        getItems().add(new FacultyListCell("test1", 1));
-        getItems().add(new FacultyListCell("test2", 4));
-        getItems().add(new FacultyListCell("test3", 56));
     }
 
     /**

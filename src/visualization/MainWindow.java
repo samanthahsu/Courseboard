@@ -47,7 +47,7 @@ public class MainWindow extends Application {
         primaryStage.show();
 
 //        init selection
-        new BoardMouseEventHandler(boardPane);
+        new MouseEventHandler(boardPane);
 
     }
 

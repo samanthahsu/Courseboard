@@ -9,8 +9,16 @@ import java.util.Objects;
 public class Course implements Serializable {
 // there should be one unique course per course ID, the same pre-reqs and same co-reqs
 
-    String id = "ID";
-    String notes = "Notes";
+/** is obj that is saved
+ * includes all information to generate a CourseNode*/
+
+// node info, todo is init when obj is saved
+        private double sceneX;
+        private double sceneY;
+
+//  data
+    private String id = "ID";
+    private String notes = "Notes";
     int credits = 0;
     private CourseList prereq;
     private CourseList coreq;
