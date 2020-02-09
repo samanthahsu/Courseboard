@@ -27,7 +27,7 @@ public class Term implements Serializable {
 
     public Course findCourse(String code) {
         for (Course c : courses) {
-            if (c.getId().equals(code)) return c;
+            if (c.getCode().equals(code)) return c;
         }
         return null;
     }

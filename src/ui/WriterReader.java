@@ -1,4 +1,4 @@
-package visualization;
+package ui;
 
 public class WriterReader {
 //    todo make object that is serializable to store all component info (javafx node info) to be able to restore layout

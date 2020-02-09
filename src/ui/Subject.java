@@ -1,4 +1,4 @@
-package visualization;
+package ui;
 
 public interface Subject {
     void addObserver(Observer o);

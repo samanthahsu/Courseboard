@@ -1,4 +1,4 @@
-package visualization;
+package ui;
 
 import exceptions.*;
 import javafx.event.ActionEvent;
@@ -25,6 +25,7 @@ public abstract class CourseWindow extends Stage {
     protected CourseNode courseNode;
     protected Scene scene;
     protected GridPane gridPane = new GridPane();
+    protected TextField subjectCodeText;
     protected TextField courseCodeText;
     protected TextField notes;
     protected TextField creditsText;
@@ -60,22 +61,25 @@ public abstract class CourseWindow extends Stage {
         gridPane.setPadding(new Insets(10));
         gridPane.setHgap(10);
         gridPane.setVgap(10);
-        gridPane.add(new Label("Course Code"), 0, 0);
-        gridPane.add(courseCodeText, 1, 0);
+        gridPane.add(new Label("Subject Code"), 0, 0);
+        gridPane.add(subjectCodeText, 1, 0);
 
-        gridPane.add(new Label("Credits"), 0, 1);
-        gridPane.add(creditsText, 1, 1);
+        gridPane.add(new Label("Course Code"), 0, 1);
+        gridPane.add(courseCodeText, 1, 1);
 
-        gridPane.add(new Label("Pre-reqs"), 0, 2);
-        gridPane.add(prereqText, 1, 2);
+        gridPane.add(new Label("Credits"), 0, 2);
+        gridPane.add(creditsText, 1, 2);
 
-        gridPane.add(new Label("Co-reqs"), 0, 3);
-        gridPane.add(coreqText, 1, 3);
+        gridPane.add(new Label("Pre-reqs"), 0, 3);
+        gridPane.add(prereqText, 1, 3);
 
-        gridPane.add(new Label("Notes"), 0, 4);
-        gridPane.add(notes, 1, 4);
+        gridPane.add(new Label("Co-reqs"), 0, 4);
+        gridPane.add(coreqText, 1, 4);
 
-        gridPane.add(submitBtn, 0, 5);
+        gridPane.add(new Label("Notes"), 0, 5);
+        gridPane.add(notes, 1, 5);
+
+        gridPane.add(submitBtn, 0, 6);
     }
 
 /**
@@ -89,6 +93,8 @@ public abstract class CourseWindow extends Stage {
                     updateCourseInfo();
                     courseNode.updateDisplay();
                     close();
+                } catch (BadSubjectCodeException e) {
+                    subjectCodeText.requestFocus();
                 } catch (BadCourseCodeException e) {
                     courseCodeText.requestFocus();
                 } catch (BadCreditException e) {
@@ -109,12 +115,15 @@ public abstract class CourseWindow extends Stage {
      * highlighting if not valid
      * if ok @updateCourseInfoHelper*/
     protected boolean updateCourseInfo() throws CourseInputException {
-        String courseCode = courseCodeText.getText().toUpperCase();
+        String subjectCode = subjectCodeText.getText().toUpperCase();
+        String courseCode = courseCodeText.getText();
         String credits = creditsText.getText();
         String prereqs = prereqText.getText();
         String coreqs = coreqText.getText();
 
-        if (courseCode.matches(".*\\W.*") && courseCode.length() > 4) {
+        if (subjectCode.matches(".*\\W.*")) {
+            throw new BadSubjectCodeException();
+        } else if (!courseCode.matches("\\d\\d*")) {
             throw new BadCourseCodeException();
         } else if (!credits.matches("\\d\\d*")) {
             throw new BadCreditException();
@@ -123,14 +132,15 @@ public abstract class CourseWindow extends Stage {
         } else if (!coreqs.matches(".*(\\w| )*.*")) {
             throw new BadCoreqException();
         }
-        updateCourseInfoHelper(courseCode, credits, prereqs, coreqs);
+        updateCourseInfoHelper(subjectCode, courseCode, credits, prereqs, coreqs);
         return true;
     }
 
 //    updates course inside the node using info from fields
-    protected void updateCourseInfoHelper(String courseCode, String credits, String prereqs, String coreqs) {
+    protected void updateCourseInfoHelper(String subjectCode, String courseCode, String credits, String prereqs, String coreqs) {
         Course course = courseNode.getCourse();
-        course.setId(courseCode);
+        course.setcIDSubject(subjectCode);
+        course.setcIDNumber(Integer.parseInt(courseCode));
         course.setCredits(Integer.parseInt(credits));
         course.setNotes("");
         LinkedList<String> prereqList = new LinkedList<String>(Arrays.asList(prereqs.split(REQUISITE_COURSE_ID_SPLITTOR)));

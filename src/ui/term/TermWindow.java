@@ -9,7 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import visualization.BoardManager;
+import ui.BoardManager;
 
 public abstract class TermWindow extends Stage {
 

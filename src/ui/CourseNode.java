@@ -1,4 +1,4 @@
-package visualization;
+package ui;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -88,7 +88,7 @@ public class CourseNode extends BoardComponent {
     }
 
     private void initCourseCodeTxt() {
-        courseIdTxt = new Text("ID: " + course.getId());
+        courseIdTxt = new Text("ID: " + course.getCode());
     }
 
     private void formatDescripFlow() {
@@ -116,7 +116,7 @@ public class CourseNode extends BoardComponent {
 //    REQUIRE: @missingCourseIds has key @this already
 //      @missingCourseIds has been suitably updated
     public void updateDisplay() {
-        courseIdTxt.setText(course.getId());
+        courseIdTxt.setText(course.getCode());
         creditsTxt.setText(Integer.toString(course.getCredits()));
         CourseList courseList = new CourseList(boardManager.missingCourseIds.get(this), CourseList.PRE_REQ);
 //        todo same for coreq

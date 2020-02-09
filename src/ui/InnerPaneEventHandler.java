@@ -1,4 +1,4 @@
-package visualization;
+package ui;
 
 import javafx.event.EventHandler;
 import javafx.scene.Cursor;
@@ -14,7 +14,7 @@ import java.util.*;
 
 /**Does all the click handling for the cork board
  * todo: move into the pane instead?*/
-public class MouseEventHandler {
+public class InnerPaneEventHandler {
 
     final DragOffset dragContext = new DragOffset(0,0);
     static final Color RECT_FILL = new Color(0.6784314f, 0.84705883f, 0.9019608f, 0.5f);
@@ -32,7 +32,7 @@ public class MouseEventHandler {
     List<DragOffset> dragOffsetList;
     SelectionModel selectionModel = new SelectionModel();
 
-    public MouseEventHandler(Pane pane) {
+    public InnerPaneEventHandler(Pane pane) {
         this.pane = pane;
 
 //        init selection box
@@ -58,6 +58,7 @@ public class MouseEventHandler {
 //            reset drag indicator
             hasBeenDragged = false;
 
+//            prepare for a drag
             if (!event.isControlDown()) {
                 for (Node node : pane.getChildren()) {
                     if (node instanceof CourseNode &&
@@ -65,37 +66,41 @@ public class MouseEventHandler {
 
                         pane.getScene().setCursor(Cursor.CLOSED_HAND);
 
+//                        case for multiple selected item drag
                         if (selectionModel.contains((CourseNode) node)) {
                             dragStatus = DragStatus.START_ON_SELECTED_NODES;
                             dragOffsetList = new ArrayList<>();
-//                            calc and store offsets for drag
+//                            calculate and store offsets for drag
                             for (CourseNode selectedNode : selectionModel.selection) {
                                 dragOffsetList.add(new DragOffset(selectedNode.getLayoutX() - event.getSceneX(), selectedNode.getLayoutY() - event.getSceneY()));
                             }
 
                         } else {
+//                            case for single item drag
                             dragStatus = DragStatus.START_ON_SINGLE_NODE;
                             deltaSingle = new DragOffset(node.getLayoutX() - event.getSceneX(), node.getLayoutY() - event.getSceneY());
                         }
 //                        store clicked on node
                         anchorNode = (CourseNode) node;
-                        return;
+                        event.consume();
+                        break;
                     }
                 }
             }
 
-            dragStatus = DragStatus.START_ON_CANVAS;
-            dragContext.dx = event.getSceneX();
-            dragContext.dy = event.getSceneY();
+            if (event.isShiftDown()) {
+                dragStatus = DragStatus.START_ON_CANVAS;
+                dragContext.dx = event.getSceneX();
+                dragContext.dy = event.getSceneY();
 
-            selectionBox.setX(dragContext.dx);
-            selectionBox.setY(dragContext.dy);
-            selectionBox.setWidth(0);
-            selectionBox.setHeight(0);
+                selectionBox.setX(dragContext.dx);
+                selectionBox.setY(dragContext.dy);
+                selectionBox.setWidth(0);
+                selectionBox.setHeight(0);
 
-            pane.getChildren().add(selectionBox);
-
-            event.consume();
+                pane.getChildren().add(selectionBox);
+                event.consume();
+            }
         }
     };
 
@@ -113,14 +118,16 @@ public class MouseEventHandler {
 
             if (dragStatus == DragStatus.START_ON_CANVAS) {
                 for (Node node : pane.getChildren()) {
-                    if (node instanceof CourseNode && node.getBoundsInParent().intersects(selectionBox.getBoundsInParent())) {
+                    if (node instanceof CourseNode &&
+                            node.getBoundsInParent().intersects(selectionBox.getBoundsInParent()) &&
+                            !selectionModel.contains((CourseNode) node)) {
                         selectionModel.add((CourseNode) node);
                     }
                 }
             }
             selectionModel.log();
             pane.getChildren().remove(selectionBox);
-            event.consume();
+//            event.consume();
         }
     };
 
@@ -129,7 +136,7 @@ public class MouseEventHandler {
         public void handle(MouseEvent event) {
             hasBeenDragged = true;
 
-            if (dragStatus == DragStatus.START_ON_CANVAS) {
+            if (event.isShiftDown() && dragStatus == DragStatus.START_ON_CANVAS) {
 
                 double offsetX = event.getSceneX() - dragContext.dx;
                 double offsetY = event.getSceneY() - dragContext.dy;
@@ -148,17 +155,21 @@ public class MouseEventHandler {
                     selectionBox.setHeight(dragContext.dy - selectionBox.getY());
                 }
 
+                event.consume();
+
             } else if (dragStatus ==  DragStatus.START_ON_SELECTED_NODES) {
                 List<CourseNode> courseNodeList = selectionModel.selection;
                 for (int i = 0; i < courseNodeList.size(); i++) {
                     courseNodeList.get(i).setLayoutX(event.getSceneX() + dragOffsetList.get(i).dx);
                     courseNodeList.get(i).setLayoutY(event.getSceneY() + dragOffsetList.get(i).dy);
                 }
+                event.consume();
+
             } else if (dragStatus ==  DragStatus.START_ON_SINGLE_NODE) {
                 anchorNode.setLayoutX(event.getSceneX() + deltaSingle.dx);
                 anchorNode.setLayoutY(event.getSceneY() + deltaSingle.dy);
+                event.consume();
             }
-            event.consume();
         }
     };
 

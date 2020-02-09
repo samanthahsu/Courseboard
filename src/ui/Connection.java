@@ -1,4 +1,4 @@
-package visualization;
+package ui;
 
 import javafx.scene.layout.Region;
 import javafx.scene.shape.*;

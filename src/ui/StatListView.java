@@ -1,6 +1,7 @@
-package visualization;
+package ui;
 
 import javafx.scene.control.ListView;
+import model.Stats;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,11 +9,11 @@ import java.util.Map;
 //todo
 //observes board manager and updates information based on whats in the board
 //should be more than an interface to more easily update data
-public class FacultyListView extends ListView<FacultyListCell> {
+public class StatListView extends ListView<StatListCell> {
 
     Map<String, Integer> facultyMap = new HashMap<>();
 
-    FacultyListView() {
+    StatListView(Stats stats) {
         setMaxWidth(200);
     }
 
@@ -21,7 +22,7 @@ public class FacultyListView extends ListView<FacultyListCell> {
      * ASSUMES: faculty is represented by the first 4 characters of a course ID
      **/
     public void update(CourseNode courseNode, Operation operation) {
-        String courseFaculty = courseNode.getCourse().getId().substring(0, 4);
+        String courseFaculty = courseNode.getCourse().getCode().substring(0, 4);
         int courseCredits = courseNode.getCourse().getCredits();
 
         if (operation == Operation.ADD) {
@@ -45,7 +46,7 @@ public class FacultyListView extends ListView<FacultyListCell> {
             String key = (String) mapElement.getKey();
             int value = (int) mapElement.getValue();
 
-            getItems().add(new FacultyListCell(key, value));
+            getItems().add(new StatListCell(key, value));
 
         }
     }

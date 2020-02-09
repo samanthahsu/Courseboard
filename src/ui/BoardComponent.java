@@ -1,12 +1,8 @@
-package visualization;
+package ui;
 
-import javafx.event.EventHandler;
-import javafx.scene.Cursor;
-import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
-import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
 import java.util.List;

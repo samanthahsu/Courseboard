@@ -1,7 +1,11 @@
-package visualization;
+package ui;
 
 import javafx.scene.input.DataFormat;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import model.Course;
+import model.Stats;
 
 import java.util.*;
 
@@ -14,13 +18,13 @@ public class BoardManager  {
     Set<Connection> connectionSet = new HashSet<>(); // todo this keeps track of the valid connections (fulfilled requisites) we have
     Map<CourseNode, List<String>> missingCourseIds = new HashMap<>(); // map of the course wish-list of each course
 
-    BoardPane boardPane;
+    Pane pane;
     CourseNode draggedCourseNode;
-    FacultyListView facultyListView; // call update on this as needed
+    Stats stats; // call update on this as needed
 
-    BoardManager(BoardPane boardPane, FacultyListView facList) {
-        this.boardPane = boardPane;
-        this.facultyListView = facList;
+    BoardManager(Pane pane, Stats stats) {
+        this.pane = pane;
+        this.stats = stats;
     }
 
 //   updates set based on removal or addition of a course
@@ -33,8 +37,10 @@ public class BoardManager  {
 //            also adds new connection representing the dependency on newNode
         removeFulfilledAddConnections(newNode);
         addNewNodeToMap(newNode);
-        boardPane.getChildren().add(newNode);
-        facultyListView.update(newNode, Operation.ADD);
+        pane.getChildren().add(newNode);
+        Course newCourse = newNode.getCourse();
+        stats.addNewRecord(newCourse.getSubject(), newCourse.getCredits(), Color.ORANGE); //todo
+//        statListView.update(newNode, Operation.ADD);
     }
 
     private void addNewNodeToMap(CourseNode newNode) {
@@ -45,7 +51,7 @@ public class BoardManager  {
             for (Map.Entry element : missingCourseIds.entrySet()) {
                 CourseNode existingNode = (CourseNode) element.getKey();
 
-                if (req.equals(existingNode.getCourse().getId())) {
+                if (req.equals(existingNode.getCourse().getCode())) {
                     addNewConnection(newNode, existingNode);
 //                    updateNodeRequisiteCourses(existingNode); //todo make list on existing course display only missing courses
                     missingPrereqs.remove(req);
@@ -59,18 +65,18 @@ public class BoardManager  {
     private void addNewConnection(CourseNode newNode, CourseNode existingNode) {
         Connection newConnection = new Connection(newNode, existingNode);
         connectionSet.add(newConnection);
-        boardPane.getChildren().add(newConnection);
+        pane.getChildren().add(newConnection);
     }
 
 
     private void removeFulfilledAddConnections(CourseNode newNode) {
         for (Map.Entry element : missingCourseIds.entrySet()) {
             List<String> reqList = (List<String>) element.getValue();
-            String id = newNode.getCourse().getId();
+            String id = newNode.getCourse().getCode();
             if (reqList.contains(id)) {
                 Connection newConnection = new Connection((CourseNode) element.getKey(), newNode);
                 connectionSet.add(newConnection);
-                boardPane.getChildren().add(newConnection);
+                pane.getChildren().add(newConnection);
                 reqList.remove(id);
                 ((CourseNode) element.getKey()).updateDisplay();
             }
@@ -84,9 +90,10 @@ public class BoardManager  {
 
         removeBrokenConnectionsAndAddMissing(deletedNode);
         missingCourseIds.remove(deletedNode);
-        boardPane.getChildren().remove(deletedNode);
+        pane.getChildren().remove(deletedNode);
 
-        facultyListView.update(deletedNode, Operation.REMOVE);
+        stats.removeRecord(deletedNode.getCourse().getcID());
+//        statListView.update(deletedNode, Operation.REMOVE);
     }
 
 //          get all connections on @board which point to @deletedNode
@@ -103,11 +110,11 @@ public class BoardManager  {
                 list.add(deletedNode.getCourseId());
 
                 newConnectionSet.remove(connection);
-                boardPane.getChildren().remove(connection);
+                pane.getChildren().remove(connection);
             } else if (connection.source == deletedNode) {
 //                kill connection
                 newConnectionSet.remove(connection);
-                boardPane.getChildren().remove(connection);
+                pane.getChildren().remove(connection);
             }
         }
         connectionSet = newConnectionSet;
@@ -122,19 +129,19 @@ public class BoardManager  {
     update faculty essentially like removing than adding a completely new node
 */
     public void editCourseUpdate(CourseNode editedNode) {
-        facultyListView.update(editedNode, Operation.REMOVE);
+        statListView.update(editedNode, Operation.REMOVE);
 //        todo
-        facultyListView.update(editedNode, Operation.ADD);
+        statListView.update(editedNode, Operation.ADD);
     }
 
 
     public void clearAll() {
 //        everything dies
 //        todo alert before doing this
-        facultyListView.clearAll();
+        statListView.clearAll();
         connectionSet.clear();
         missingCourseIds.clear();
-        boardPane.getChildren().clear();
+        pane.getChildren().clear();
     }
 
 //    public void addTerm(String termName) {
@@ -155,33 +162,4 @@ public class BoardManager  {
 //        db.setContent(cc);
         draggedCourseNode = courseNode;
     }
-
-//    public void onDragOverTerm(TermNode termNode, MouseDragEvent event) {
-//        if (event.getGestureSource() != termNode && draggedCourseNode != null) {
-//            termNode.selectionGlowOn();
-//            System.out.println("hi");
-//        }
-//        event.consume();
-//    }
-//    public void dragDropped(TermNode termNode, MouseDragEvent event) {
-//        boolean dragCompleted = false;
-////        Dragboard dragboard = event.getDragboard();
-//        if (draggedCourseNode != null) {
-////            Course course = (Course) dragboard.getContent(COURSE_INFO);
-//            termNode.addToGrid(draggedCourseNode);
-//            dragCompleted = true;
-//        }
-////        event.setDropCompleted(dragCompleted);
-//        event.consume();
-//    }
-//
-//    public void dragDone(TermNode termNode, MouseDragEvent event) {
-//
-////        TransferMode tm = event.getTransferMode();
-//
-//        if (tm == TransferMode.MOVE) {
-////            Course course = (Course) event.getDragboard().getContent(COURSE_INFO);
-//            board.getChildren().remove(new CourseNode(course, this)); // todo make equals override
-//        }
-//        event.consume();
-    }
+ }

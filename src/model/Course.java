@@ -1,6 +1,7 @@
 package model;
 
-import visualization.CourseList;
+import exceptions.CourseInputException;
+import ui.CourseList;
 
 import java.io.Serializable;
 import java.util.LinkedList;
@@ -17,52 +18,79 @@ public class Course implements Serializable {
     private double sceneY;
 
 //  data
-    private String id = "ID";
+    private CourseID cID;
     private String notes = "Notes";
     int credits = 0;
     private CourseList prereq;
     private CourseList coreq;
 
-    public Course(String code, String description, int credits, LinkedList<String> prereq, LinkedList<String> coreq) {
-        this.id = code;
+    public Course(String subject, int code, String description, int credits, LinkedList<String> prereq, LinkedList<String> coreq) {
+        cID = new CourseID(subject, code);
         this.notes = description;
         this.credits = credits;
         this.prereq = new CourseList(prereq, CourseList.PRE_REQ);
         this.coreq = new CourseList(coreq, CourseList.CO_REQ);
     }
 
-    //        dummy course for comparison
-    public Course(String code) {
-        this.id = code;
-        this.prereq = new CourseList(CourseList.PRE_REQ);
-        this.coreq = new CourseList(CourseList.CO_REQ);
-    }
+//    //        dummy course for comparison
+//    public Course(String code) {
+//        this.code = code;
+//        this.prereq = new CourseList(CourseList.PRE_REQ);
+//        this.coreq = new CourseList(CourseList.CO_REQ);
+//    }
+
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Course)) return false;
         Course course = (Course) o;
-        return id.equals(course.id);
+        return Objects.equals(cID, course.cID);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(cID);
     }
 
-    @Override
-    public String toString() {
-        return id + ": " + notes + '\'' +
-                ", credits=" + credits;
+    public double getSceneX() {
+        return sceneX;
     }
 
-    public String getId() {
-        return id;
+    public void setSceneX(double sceneX) {
+        this.sceneX = sceneX;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public double getSceneY() {
+        return sceneY;
+    }
+
+    public void setSceneY(double sceneY) {
+        this.sceneY = sceneY;
+    }
+
+    public CourseID getcID() {
+        return cID;
+    }
+
+    public void setcIDNumber(int number) {
+        this.cID.number = number;
+    }
+
+    public void setcIDSubject(String subject) {
+        this.cID.subject = subject;
+    }
+
+    public CourseList getPrereq() {
+        return prereq;
+    }
+
+    public void setPrereq(CourseList prereq) {
+        this.prereq = prereq;
+    }
+
+    public void setCoreq(CourseList coreq) {
+        this.coreq = coreq;
     }
 
     public String getNotes() {

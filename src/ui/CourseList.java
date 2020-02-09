@@ -1,4 +1,4 @@
-package visualization;
+package ui;
 
 import java.io.Serializable;
 import java.util.LinkedList;

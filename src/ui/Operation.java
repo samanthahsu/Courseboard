@@ -1,4 +1,4 @@
-package visualization;
+package ui;
 
 /** global shorthand for operations
  * used when updating observers

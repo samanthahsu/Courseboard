@@ -1,4 +1,4 @@
-package visualization;
+package ui;
 
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -13,6 +13,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import model.Course;
+import model.Stats;
 
 public class MainWindow extends Application {
 
@@ -27,17 +28,18 @@ public class MainWindow extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+
         BorderPane root = new BorderPane();
         MenuBar menuBar = initMenuBar();
 
-       FacultyListView facList = new FacultyListView();
-
-        BoardPane boardPane = new BoardPane();
-        boardManager = new BoardManager(boardPane, facList);
+        Stats stats = new Stats();
+        StatListView facList = new StatListView(stats);
+        Board board = new Board(stats);
+//        boardManager = new BoardManager(board, facList);
 
 //        place all in border pane
         root.setTop(menuBar);
-        root.setCenter(boardPane);
+        root.setCenter(board);
         root.setRight(facList);
 
 
@@ -47,12 +49,12 @@ public class MainWindow extends Application {
         primaryStage.show();
 
 //        init selection
-        new MouseEventHandler(boardPane);
+//        new MouseEventHandler(board);
 
     }
 
 
-    //    todo somehow keep menuBar on top of everything
+    //    todo keep menuBar on top of everything
     private MenuBar initMenuBar() {
         MenuBar menuBar = new MenuBar();
         menuBar.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, null, null)));

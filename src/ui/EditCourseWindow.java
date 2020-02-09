@@ -1,4 +1,4 @@
-package visualization;
+package ui;
 
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
@@ -16,7 +16,7 @@ public class EditCourseWindow extends CourseWindow {
     @Override
     protected void initTextFields() {
         Course course = courseNode.getCourse();
-        courseCodeText = new TextField(course.getId());
+        courseCodeText = new TextField(course.getCode());
         notes = new TextField(course.getNotes());
         creditsText = new TextField(Integer.toString(course.getCredits()));
         prereqText = new TextField(course.getAllPrereqDisplayString());
