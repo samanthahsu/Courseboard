@@ -34,6 +34,7 @@ public class CourseNode extends BoardComponent {
     private Color fillColor = Color.BEIGE;
     private Color borderColor = Color.GRAY;
     private VBox mainBody;
+
     private Course course;
 
     private BoardManager boardManager;

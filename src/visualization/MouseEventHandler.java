@@ -12,14 +12,19 @@ import javafx.scene.shape.StrokeLineCap;
 
 import java.util.*;
 
+/**Does all the click handling for the cork board
+ * todo: move into the pane instead?*/
 public class MouseEventHandler {
 
     final DragOffset dragContext = new DragOffset(0,0);
     static final Color RECT_FILL = new Color(0.6784314f, 0.84705883f, 0.9019608f, 0.5f);
 
-    Rectangle rect;
+    Rectangle selectionBox;
 
-    Pane group;
+//    the obj this is operating on
+    Pane pane;
+
+//    info needed for dragging
     DragStatus dragStatus = DragStatus.START_ON_CANVAS;
     DragOffset deltaSingle;
     CourseNode anchorNode;
@@ -27,24 +32,25 @@ public class MouseEventHandler {
     List<DragOffset> dragOffsetList;
     SelectionModel selectionModel = new SelectionModel();
 
-    public MouseEventHandler(Pane group) {
-        this.group = group;
+    public MouseEventHandler(Pane pane) {
+        this.pane = pane;
 
-        rect = new Rectangle( 0,0,0,0);
-        rect.setStroke(Color.BLUE);
-        rect.setStrokeWidth(1);
-        rect.setStrokeLineCap(StrokeLineCap.ROUND);
-        rect.setFill(RECT_FILL);
+//        init selection box
+        selectionBox = new Rectangle( 0,0,0,0);
+        selectionBox.setStroke(Color.BLUE);
+        selectionBox.setStrokeWidth(1);
+        selectionBox.setStrokeLineCap(StrokeLineCap.ROUND);
+        selectionBox.setFill(RECT_FILL);
 
 //        set all the handling
-        group.addEventHandler(MouseEvent.MOUSE_PRESSED, onMousePressedEventHandler);
-        group.addEventHandler(MouseEvent.MOUSE_DRAGGED, onMouseDraggedEventHandler);
-        group.addEventHandler(MouseEvent.MOUSE_RELEASED, onMouseReleasedEventHandler);
+        pane.addEventHandler(MouseEvent.MOUSE_PRESSED, onMousePressedEventHandler);
+        pane.addEventHandler(MouseEvent.MOUSE_DRAGGED, onMouseDraggedEventHandler);
+        pane.addEventHandler(MouseEvent.MOUSE_RELEASED, onMouseReleasedEventHandler);
     }
 
 
     /**
-     * affects first node it sees in the group thats at x y (likely oldest child) and saves drag info
+     * affects first node it sees in the group thats at x y (oldest child) and saves drag info
      * if none are at event x y do a canvas selection drag*/
     EventHandler<MouseEvent> onMousePressedEventHandler = new EventHandler<MouseEvent>() {
         @Override
@@ -53,11 +59,11 @@ public class MouseEventHandler {
             hasBeenDragged = false;
 
             if (!event.isControlDown()) {
-                for (Node node : group.getChildren()) {
+                for (Node node : pane.getChildren()) {
                     if (node instanceof CourseNode &&
                             node.localToScene(node.getBoundsInLocal()).contains(event.getSceneX(), event.getSceneY())) {
 
-                        group.getScene().setCursor(Cursor.CLOSED_HAND);
+                        pane.getScene().setCursor(Cursor.CLOSED_HAND);
 
                         if (selectionModel.contains((CourseNode) node)) {
                             dragStatus = DragStatus.START_ON_SELECTED_NODES;
@@ -82,12 +88,12 @@ public class MouseEventHandler {
             dragContext.dx = event.getSceneX();
             dragContext.dy = event.getSceneY();
 
-            rect.setX(dragContext.dx);
-            rect.setY(dragContext.dy);
-            rect.setWidth(0);
-            rect.setHeight(0);
+            selectionBox.setX(dragContext.dx);
+            selectionBox.setY(dragContext.dy);
+            selectionBox.setWidth(0);
+            selectionBox.setHeight(0);
 
-            group.getChildren().add( rect);
+            pane.getChildren().add(selectionBox);
 
             event.consume();
         }
@@ -99,21 +105,21 @@ public class MouseEventHandler {
         @Override
         public void handle(MouseEvent event) {
 
-            group.getScene().setCursor(Cursor.DEFAULT);
+            pane.getScene().setCursor(Cursor.DEFAULT);
 
             if (!hasBeenDragged && dragStatus == DragStatus.START_ON_CANVAS) {
                 selectionModel.clear();
             }
 
             if (dragStatus == DragStatus.START_ON_CANVAS) {
-                for (Node node : group.getChildren()) {
-                    if (node instanceof CourseNode && node.getBoundsInParent().intersects(rect.getBoundsInParent())) {
+                for (Node node : pane.getChildren()) {
+                    if (node instanceof CourseNode && node.getBoundsInParent().intersects(selectionBox.getBoundsInParent())) {
                         selectionModel.add((CourseNode) node);
                     }
                 }
             }
             selectionModel.log();
-            group.getChildren().remove(rect);
+            pane.getChildren().remove(selectionBox);
             event.consume();
         }
     };
@@ -129,17 +135,17 @@ public class MouseEventHandler {
                 double offsetY = event.getSceneY() - dragContext.dy;
 
                 if (offsetX > 0)
-                    rect.setWidth(offsetX);
+                    selectionBox.setWidth(offsetX);
                 else {
-                    rect.setX(event.getSceneX());
-                    rect.setWidth(dragContext.dx - rect.getX());
+                    selectionBox.setX(event.getSceneX());
+                    selectionBox.setWidth(dragContext.dx - selectionBox.getX());
                 }
 
                 if (offsetY > 0) {
-                    rect.setHeight(offsetY);
+                    selectionBox.setHeight(offsetY);
                 } else {
-                    rect.setY(event.getSceneY());
-                    rect.setHeight(dragContext.dy - rect.getY());
+                    selectionBox.setY(event.getSceneY());
+                    selectionBox.setHeight(dragContext.dy - selectionBox.getY());
                 }
 
             } else if (dragStatus ==  DragStatus.START_ON_SELECTED_NODES) {

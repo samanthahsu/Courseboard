@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="14.3.0">
+  <zoom_level>6</zoom_level>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>534</x>
+      <y>270</y>
+      <w>60</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>MainWindow</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>606</x>
+      <y>636</y>
+      <w>132</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>BoardPane
+--
+custom extension of javaFX Pane 
+to help implement zooming</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>528</x>
+      <y>456</y>
+      <w>60</w>
+      <h>18</h>
+    </coordinates>
+    <panel_attributes>Connection</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>558</x>
+      <y>282</y>
+      <w>24</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>20.0;50.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>546</x>
+      <y>312</y>
+      <w>126</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>BoardManager
+--
+manage everything that 
+goes in the central board</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>564</x>
+      <y>354</y>
+      <w>30</w>
+      <h>114</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=0..n</panel_attributes>
+    <additional_attributes>10.0;170.0;20.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>642</x>
+      <y>474</y>
+      <w>90</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>FacultyListView
+--
+extends ListView</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>600</x>
+      <y>354</y>
+      <w>102</w>
+      <h>132</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>150.0;200.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>618</x>
+      <y>144</y>
+      <w>108</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>AddCourseWindow
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>408</x>
+      <y>498</y>
+      <w>120</w>
+      <h>48</h>
+    </coordinates>
+    <panel_attributes>CourseNode
+--
+stores the node that 
+is currently being dragged</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>438</x>
+      <y>354</y>
+      <w>132</w>
+      <h>156</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>200.0;10.0;10.0;240.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>588</x>
+      <y>354</y>
+      <w>60</w>
+      <h>294</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>80.0;470.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>474</x>
+      <y>468</y>
+      <w>84</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+m1=2</panel_attributes>
+    <additional_attributes>10.0;50.0;120.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>432</x>
+      <y>594</y>
+      <w>114</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>Course
+--
+serializable data structure 
+of the CourseNode</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>450</x>
+      <y>540</y>
+      <w>30</w>
+      <h>66</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>30.0;90.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>498</x>
+      <y>84</y>
+      <w>138</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>CourseWindow
+--
+basic window to modify courses</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>558</x>
+      <y>114</y>
+      <w>108</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;160.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>474</x>
+      <y>156</y>
+      <w>108</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>EditCourseWindow
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>486</x>
+      <y>114</y>
+      <w>72</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>100.0;10.0;10.0;70.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>378</x>
+      <y>252</y>
+      <w>126</w>
+      <h>54</h>
+    </coordinates>
+    <panel_attributes>MouseEventHandler
+--
+handles selection and 
+general drag and drop actions</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>498</x>
+      <y>252</y>
+      <w>48</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>10.0;10.0;60.0;40.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>408</x>
+      <y>300</y>
+      <w>36</w>
+      <h>210</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-</panel_attributes>
+    <additional_attributes>10.0;330.0;40.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>786</x>
+      <y>444</y>
+      <w>90</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>FacultyListCell
+--
+hbox for list item display</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>720</x>
+      <y>450</y>
+      <w>78</w>
+      <h>42</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.</panel_attributes>
+    <additional_attributes>110.0;10.0;10.0;50.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLNote</id>
+    <coordinates>
+      <x>228</x>
+      <y>246</y>
+      <w>132</w>
+      <h>60</h>
+    </coordinates>
+    <panel_attributes>Incorporate MouseEventHandler
+so it feels less unstable
+in the diagram?
+bg=yellow</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

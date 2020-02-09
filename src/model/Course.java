@@ -13,8 +13,8 @@ public class Course implements Serializable {
  * includes all information to generate a CourseNode*/
 
 // node info, todo is init when obj is saved
-        private double sceneX;
-        private double sceneY;
+    private double sceneX;
+    private double sceneY;
 
 //  data
     private String id = "ID";

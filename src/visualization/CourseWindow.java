@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 
 // todo next thing should be saving and loading, that's important
-//  term and course can be serialized, the rest need to be stuffed into a new object
+// term and course can be serialized, the rest need to be stuffed into a new object
 // todo common to both adding and editing courses
 public abstract class CourseWindow extends Stage {
 
