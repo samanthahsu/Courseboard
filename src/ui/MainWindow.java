@@ -1,46 +1,43 @@
 package ui;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.paint.Color;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import model.Course;
 import model.Stats;
 
+import java.io.File;
+
 public class MainWindow extends Application {
 
-    public final static char PRE_REQ_TYPE = 'p';
-    public final static char CO_REQ_TYPE = 'c';
-
+    File currFile;
     BoardManager boardManager;
-//    todo enable saving and loading for display config and data classes: so course, term, course manager, nodes and stuff
-//    todo also probably best to save the pane as well, to avoid recompiling
-
-//    todo zoom in and out of pane
+    WriterReader writerReader;
+    Stage mainStage; // used for file chooser
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
         BorderPane root = new BorderPane();
         MenuBar menuBar = initMenuBar();
 
         Stats stats = new Stats();
-        StatListView facList = new StatListView(stats);
+        StatListView statListView = new StatListView(stats);
         Board board = new Board(stats);
-//        boardManager = new BoardManager(board, facList);
+        boardManager = new BoardManager(board, stats);
 
 //        place all in border pane
         root.setTop(menuBar);
         root.setCenter(board);
-        root.setRight(facList);
+        root.setRight(statListView);
 
 
         primaryStage.setScene(new Scene(root, 1024, 800));
@@ -48,16 +45,22 @@ public class MainWindow extends Application {
         primaryStage.sizeToScene();
         primaryStage.show();
 
-//        init selection
-//        new MouseEventHandler(board);
+//        closes all offending windows when main window is closed
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                Platform.exit();
+            }
+        });
+
+        mainStage = primaryStage;
+        writerReader = new WriterReader(boardManager);
+
 
     }
 
-
-    //    todo keep menuBar on top of everything
     private MenuBar initMenuBar() {
         MenuBar menuBar = new MenuBar();
-        menuBar.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, null, null)));
 
         Menu menuFile = initMenuFile();
         Menu menuEdit = initMenuEdit();
@@ -69,18 +72,12 @@ public class MainWindow extends Application {
 
     private Menu initMenuEdit() {
         Menu menuEdit = new Menu("Edit");
-//        MenuItem addTerm = new MenuItem("Add Term");
-//        addTerm.setOnAction(new EventHandler<ActionEvent>() {
-//            @Override
-//            public void handle(ActionEvent event) {
-//                new AddTermWindow(boardManager);
-//            }
-//        });
+
         MenuItem addCourse = new MenuItem("Add Course");
         addCourse.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                new AddCourseWindow(new CourseNode(new Course(""), boardManager));
+                new AddCourseWindow(new CourseNode(new Course("", 0), boardManager));
             }
         });
         MenuItem clearAll = new MenuItem("Clear All");
@@ -97,11 +94,47 @@ public class MainWindow extends Application {
     private Menu initMenuFile() {
         Menu menuFile = new Menu("File");
         MenuItem newItem = new MenuItem("New...");
+        newItem.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                currFile = null;
+                boardManager.clearAll();
+            }
+        });
         MenuItem openItem = new MenuItem("Open...");
+        openItem.setOnAction(event -> {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Open File...");
+            fileChooser.setInitialDirectory(new File(WriterReader.FILE_ROOT));
+            File selectedFile = fileChooser.showOpenDialog(mainStage);
+            writerReader.read(selectedFile);
+        });
         MenuItem saveItem = new MenuItem("Save");
+        saveItem.setOnAction(event -> {
+            if (currFile != null) {
+                writerReader.write(currFile);
+            } else {
+                saveAs();
+            }
+        });
         MenuItem saveAsItem = new MenuItem("Save As...");
+        saveAsItem.setOnAction(event -> saveAs());
         menuFile.getItems().addAll(newItem, openItem, saveAsItem, saveItem);
         return menuFile;
+    }
+
+    /** common to both save and saveAs
+     * opens file chooser
+     * calls write
+     * sets currFile*/
+    private void saveAs() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save As...");
+        File file = fileChooser.showSaveDialog(mainStage);
+        fileChooser.setInitialDirectory(new File(WriterReader.FILE_ROOT));
+
+        writerReader.write(file);
+        currFile = file;
     }
 
 }

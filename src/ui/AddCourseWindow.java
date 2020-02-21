@@ -11,11 +11,12 @@ public class AddCourseWindow extends CourseWindow {
 
     @Override
     protected void initTextFields() {
+        subjectCodeText = new TextField("");
         courseCodeText = new TextField("");
         notes = new TextField("");
         creditsText = new TextField("");
-        prereqText = new TextField("");
-        coreqText = new TextField("");
+        preReqText = new TextField("");
+        coReqText = new TextField("");
     }
 
     @Override
@@ -30,6 +31,7 @@ public class AddCourseWindow extends CourseWindow {
         setTitle("Adding Course");
     }
 
+//    todo do a lot of decoupling here
     @Override
     protected void updateBoardManager() {
         courseNode.getBoardManager().addCourseUpdate(courseNode);

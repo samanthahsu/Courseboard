@@ -10,13 +10,6 @@ import java.util.Objects;
 public class Course implements Serializable {
 // there should be one unique course per course ID, the same pre-reqs and same co-reqs
 
-/** is obj that is saved
- * includes all information to generate a CourseNode*/
-
-// node info, todo is init when obj is saved
-    private double sceneX;
-    private double sceneY;
-
 //  data
     private CourseID cID;
     private String notes = "Notes";
@@ -32,12 +25,12 @@ public class Course implements Serializable {
         this.coreq = new CourseList(coreq, CourseList.CO_REQ);
     }
 
-//    //        dummy course for comparison
-//    public Course(String code) {
-//        this.code = code;
-//        this.prereq = new CourseList(CourseList.PRE_REQ);
-//        this.coreq = new CourseList(CourseList.CO_REQ);
-//    }
+    //        dummy course for comparison
+    public Course(String subject, int code) {
+        this.cID = new CourseID(subject, code);
+        this.prereq = new CourseList(CourseList.PRE_REQ);
+        this.coreq = new CourseList(CourseList.CO_REQ);
+    }
 
 
     @Override
@@ -53,25 +46,11 @@ public class Course implements Serializable {
         return Objects.hash(cID);
     }
 
-    public double getSceneX() {
-        return sceneX;
-    }
-
-    public void setSceneX(double sceneX) {
-        this.sceneX = sceneX;
-    }
-
-    public double getSceneY() {
-        return sceneY;
-    }
-
-    public void setSceneY(double sceneY) {
-        this.sceneY = sceneY;
-    }
-
     public CourseID getcID() {
         return cID;
     }
+
+    public String getSubject() {return this.cID.subject;}
 
     public void setcIDNumber(int number) {
         this.cID.number = number;

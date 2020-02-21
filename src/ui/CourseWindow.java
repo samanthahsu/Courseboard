@@ -15,28 +15,28 @@ import model.Course;
 import java.util.Arrays;
 import java.util.LinkedList;
 
-// todo next thing should be saving and loading, that's important
-// term and course can be serialized, the rest need to be stuffed into a new object
-// todo common to both adding and editing courses
+ /** common to both adding and editing courses */
+//todo separate window for prereq adding
 public abstract class CourseWindow extends Stage {
 
     static final String REQUISITE_COURSE_ID_SPLITTOR = ", ";
 
     protected CourseNode courseNode;
     protected Scene scene;
-    protected GridPane gridPane = new GridPane();
+    protected GridPane gridPane;
     protected TextField subjectCodeText;
     protected TextField courseCodeText;
     protected TextField notes;
     protected TextField creditsText;
-    protected TextField prereqText;
-    protected TextField coreqText;
+    protected TextField preReqText;
+    protected TextField coReqText;
     protected Button submitBtn;
-//    ^^ these are initialized by caller
+//    ^ these are initialized by caller
 
     public CourseWindow(CourseNode cn) {
         super();
         this.courseNode = cn;
+        gridPane = new GridPane();
         formatAndShow();
     }
 
@@ -46,7 +46,7 @@ public abstract class CourseWindow extends Stage {
         initTitle();
         initTextFields();
         initButton();
-        formatGridpane();
+        formatGridPane();
         setButtonHandler();
         sizeToScene();
         show();
@@ -57,10 +57,10 @@ public abstract class CourseWindow extends Stage {
     abstract protected void initButton();
     abstract protected void initTitle();
 
-    protected void formatGridpane() {
+    protected void formatGridPane() {
         gridPane.setPadding(new Insets(10));
         gridPane.setHgap(10);
-        gridPane.setVgap(10);
+        gridPane.setVgap(5);
         gridPane.add(new Label("Subject Code"), 0, 0);
         gridPane.add(subjectCodeText, 1, 0);
 
@@ -71,10 +71,10 @@ public abstract class CourseWindow extends Stage {
         gridPane.add(creditsText, 1, 2);
 
         gridPane.add(new Label("Pre-reqs"), 0, 3);
-        gridPane.add(prereqText, 1, 3);
+        gridPane.add(preReqText, 1, 3);
 
         gridPane.add(new Label("Co-reqs"), 0, 4);
-        gridPane.add(coreqText, 1, 4);
+        gridPane.add(coReqText, 1, 4);
 
         gridPane.add(new Label("Notes"), 0, 5);
         gridPane.add(notes, 1, 5);
@@ -100,9 +100,9 @@ public abstract class CourseWindow extends Stage {
                 } catch (BadCreditException e) {
                     creditsText.requestFocus();
                 } catch (BadPrereqException e) {
-                    prereqText.requestFocus();
+                    preReqText.requestFocus();
                 } catch (BadCoreqException e) {
-                    coreqText.requestFocus();
+                    coReqText.requestFocus();
                 } catch (CourseInputException e) {
                     e.printStackTrace();
                 }
@@ -118,8 +118,8 @@ public abstract class CourseWindow extends Stage {
         String subjectCode = subjectCodeText.getText().toUpperCase();
         String courseCode = courseCodeText.getText();
         String credits = creditsText.getText();
-        String prereqs = prereqText.getText();
-        String coreqs = coreqText.getText();
+        String prereqs = preReqText.getText();
+        String coreqs = coReqText.getText();
 
         if (subjectCode.matches(".*\\W.*")) {
             throw new BadSubjectCodeException();
@@ -136,7 +136,9 @@ public abstract class CourseWindow extends Stage {
         return true;
     }
 
-//    updates course inside the node using info from fields
+/**
+ * updates course inside the node using info from fields
+*/
     protected void updateCourseInfoHelper(String subjectCode, String courseCode, String credits, String prereqs, String coreqs) {
         Course course = courseNode.getCourse();
         course.setcIDSubject(subjectCode);

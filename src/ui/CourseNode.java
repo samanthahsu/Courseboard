@@ -88,7 +88,7 @@ public class CourseNode extends BoardComponent {
     }
 
     private void initCourseCodeTxt() {
-        courseIdTxt = new Text("ID: " + course.getCode());
+        courseIdTxt = new Text("ID: " + course.getcID().toString());
     }
 
     private void formatDescripFlow() {
@@ -116,7 +116,7 @@ public class CourseNode extends BoardComponent {
 //    REQUIRE: @missingCourseIds has key @this already
 //      @missingCourseIds has been suitably updated
     public void updateDisplay() {
-        courseIdTxt.setText(course.getCode());
+        courseIdTxt.setText(course.getcID().toString());
         creditsTxt.setText(Integer.toString(course.getCredits()));
         CourseList courseList = new CourseList(boardManager.missingCourseIds.get(this), CourseList.PRE_REQ);
 //        todo same for coreq

@@ -16,11 +16,11 @@ public class EditCourseWindow extends CourseWindow {
     @Override
     protected void initTextFields() {
         Course course = courseNode.getCourse();
-        courseCodeText = new TextField(course.getCode());
+        courseCodeText = new TextField(course.getcID().toString());
         notes = new TextField(course.getNotes());
         creditsText = new TextField(Integer.toString(course.getCredits()));
-        prereqText = new TextField(course.getAllPrereqDisplayString());
-        coreqText = new TextField(course.getAllCoreqDisplayString());
+        preReqText = new TextField(course.getAllPrereqDisplayString());
+        coReqText = new TextField(course.getAllCoreqDisplayString());
     }
 
     @Override

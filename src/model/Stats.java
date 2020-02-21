@@ -31,6 +31,8 @@ public class Stats {
 
     public void changeColor(String subject, Color color){}
 
+    public void clearAll(){records = new LinkedList<>();}
+
     public List<Record> getRecords() {
         return records;
     }

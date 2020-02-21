@@ -8,4 +8,9 @@ public class CourseID {
         this.subject = subject;
         this.number = number;
     }
+
+    @Override
+    public String toString() {
+        return subject + number;
+    }
 }

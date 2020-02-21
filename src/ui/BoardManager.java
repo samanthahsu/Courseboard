@@ -1,6 +1,5 @@
 package ui;
 
-import javafx.scene.input.DataFormat;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -11,33 +10,32 @@ import java.util.*;
 
 public class BoardManager  {
 
-//  todo make custom global variable for drag board
-//      need separate the drag stuff from board component
-    static final DataFormat COURSE_INFO = new DataFormat("Course");
-
-    Set<Connection> connectionSet = new HashSet<>(); // todo this keeps track of the valid connections (fulfilled requisites) we have
+    Set<Connection> connectionSet = new HashSet<>(); // this keeps track of the valid connections (fulfilled requisites) we have
     Map<CourseNode, List<String>> missingCourseIds = new HashMap<>(); // map of the course wish-list of each course
 
-    Pane pane;
+
+    Pane board; // the pane everything is being attached to
     CourseNode draggedCourseNode;
     Stats stats; // call update on this as needed
 
     BoardManager(Pane pane, Stats stats) {
-        this.pane = pane;
+        this.board = pane;
         this.stats = stats;
     }
 
-//   updates set based on removal or addition of a course
-//    post:
-//      missingCourseIds: added new key with corresponding list
-//      connectionSet: contains all new connections from and to newNode
-//      pane: holds and displays newNode and its connections
+/**
+   updates set based on removal or addition of a course
+    post:
+      missingCourseIds: added new key with corresponding list
+      connectionSet: contains all new connections from and to newNode
+      pane: holds and displays newNode and its connections
+*/
     public void addCourseUpdate(CourseNode newNode) {
 //      find and remove the missing courses that are no longer missing because addition of newNode
 //            also adds new connection representing the dependency on newNode
         removeFulfilledAddConnections(newNode);
         addNewNodeToMap(newNode);
-        pane.getChildren().add(newNode);
+        board.getChildren().add(newNode);
         Course newCourse = newNode.getCourse();
         stats.addNewRecord(newCourse.getSubject(), newCourse.getCredits(), Color.ORANGE); //todo
 //        statListView.update(newNode, Operation.ADD);
@@ -51,8 +49,8 @@ public class BoardManager  {
             for (Map.Entry element : missingCourseIds.entrySet()) {
                 CourseNode existingNode = (CourseNode) element.getKey();
 
-                if (req.equals(existingNode.getCourse().getCode())) {
-                    addNewConnection(newNode, existingNode);
+                if (req.equals(existingNode.getCourse().getcID().toString())) {
+                    addConnection(newNode, existingNode);
 //                    updateNodeRequisiteCourses(existingNode); //todo make list on existing course display only missing courses
                     missingPrereqs.remove(req);
                     break;
@@ -62,21 +60,21 @@ public class BoardManager  {
         missingCourseIds.put(newNode, missingPrereqs); // add new course to missing course map
     }
 
-    private void addNewConnection(CourseNode newNode, CourseNode existingNode) {
+    private void addConnection(CourseNode newNode, CourseNode existingNode) {
         Connection newConnection = new Connection(newNode, existingNode);
         connectionSet.add(newConnection);
-        pane.getChildren().add(newConnection);
+        board.getChildren().add(newConnection);
     }
 
 
     private void removeFulfilledAddConnections(CourseNode newNode) {
         for (Map.Entry element : missingCourseIds.entrySet()) {
             List<String> reqList = (List<String>) element.getValue();
-            String id = newNode.getCourse().getCode();
+            String id = newNode.getCourse().getcID().toString();
             if (reqList.contains(id)) {
                 Connection newConnection = new Connection((CourseNode) element.getKey(), newNode);
                 connectionSet.add(newConnection);
-                pane.getChildren().add(newConnection);
+                board.getChildren().add(newConnection);
                 reqList.remove(id);
                 ((CourseNode) element.getKey()).updateDisplay();
             }
@@ -90,16 +88,18 @@ public class BoardManager  {
 
         removeBrokenConnectionsAndAddMissing(deletedNode);
         missingCourseIds.remove(deletedNode);
-        pane.getChildren().remove(deletedNode);
+        board.getChildren().remove(deletedNode);
 
         stats.removeRecord(deletedNode.getCourse().getcID());
 //        statListView.update(deletedNode, Operation.REMOVE);
     }
 
-//          get all connections on @board which point to @deletedNode
-//          for each connection update the other corresponding node's missing courses list
-//          get all connections pointed to by the deleted node and kill them dead
-//          delete all the connections
+/**
+          get all connections on @board which point to @deletedNode
+          for each connection update the other corresponding node's missing courses list
+          get all connections pointed to by the deleted node and kill them dead
+          delete all the connections
+*/
     private void removeBrokenConnectionsAndAddMissing(CourseNode deletedNode) {
         Set<Connection> newConnectionSet = new HashSet<>(connectionSet);
         for (Connection connection : connectionSet) {
@@ -110,11 +110,11 @@ public class BoardManager  {
                 list.add(deletedNode.getCourseId());
 
                 newConnectionSet.remove(connection);
-                pane.getChildren().remove(connection);
+                board.getChildren().remove(connection);
             } else if (connection.source == deletedNode) {
 //                kill connection
                 newConnectionSet.remove(connection);
-                pane.getChildren().remove(connection);
+                board.getChildren().remove(connection);
             }
         }
         connectionSet = newConnectionSet;
@@ -129,19 +129,18 @@ public class BoardManager  {
     update faculty essentially like removing than adding a completely new node
 */
     public void editCourseUpdate(CourseNode editedNode) {
-        statListView.update(editedNode, Operation.REMOVE);
+//        stats.removeRecord(editedNode.getCourse().getcID());
 //        todo
-        statListView.update(editedNode, Operation.ADD);
+//        stats.addNewRecord();
     }
 
-
+//        everything in board dies
     public void clearAll() {
-//        everything dies
 //        todo alert before doing this
-        statListView.clearAll();
+        stats.clearAll();
         connectionSet.clear();
         missingCourseIds.clear();
-        pane.getChildren().clear();
+        board.getChildren().clear();
     }
 
 //    public void addTerm(String termName) {

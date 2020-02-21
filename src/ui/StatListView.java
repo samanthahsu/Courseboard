@@ -22,7 +22,7 @@ public class StatListView extends ListView<StatListCell> {
      * ASSUMES: faculty is represented by the first 4 characters of a course ID
      **/
     public void update(CourseNode courseNode, Operation operation) {
-        String courseFaculty = courseNode.getCourse().getCode().substring(0, 4);
+        String courseFaculty = courseNode.getCourse().getSubject();
         int courseCredits = courseNode.getCourse().getCredits();
 
         if (operation == Operation.ADD) {
