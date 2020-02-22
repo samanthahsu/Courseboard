@@ -4,11 +4,16 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -25,38 +30,60 @@ public class MainWindow extends Application {
     Stage mainStage; // used for file chooser
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
+    public void start(Stage stage) throws Exception {
+
         BorderPane root = new BorderPane();
         MenuBar menuBar = initMenuBar();
 
         Stats stats = new Stats();
         StatListView statListView = new StatListView(stats);
-        Board board = new Board(stats);
-        boardManager = new BoardManager(board, stats);
+
+        Board board = new Board();
+        BoardNodeGestures nodeGestures = new BoardNodeGestures(board); // have to add event filter from this to every draggable thing
+
+        Label label1 = new Label("Draggable node 1");
+        label1.setTranslateX(10);
+        label1.setTranslateY(10);
+        label1.addEventFilter( MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
+        label1.addEventFilter( MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
+
+        board.getChildren().add(label1);
+
+        Pane pane = new Pane();
+        pane.getChildren().add(board);
+
+//        gestures are applied to the scene
+        BoardGestures boardGestures = new BoardGestures(board);
+        pane.addEventFilter(ScrollEvent.ANY, boardGestures.getOnScrollEventHandler());
+        pane.addEventFilter(MouseEvent.MOUSE_DRAGGED, boardGestures.getOnMouseDraggedEventHandler());
+        pane.addEventFilter(MouseEvent.MOUSE_PRESSED, boardGestures.getOnMousePressedEventHandler());
+
+        boardManager = new BoardManager(board, stats, nodeGestures);
 
 //        place all in border pane
+        root.setCenter(pane);
         root.setTop(menuBar);
-        root.setCenter(board);
         root.setRight(statListView);
 
+        stage.setScene(new Scene(root, 1024, 800));
+        stage.setTitle("CourseBoard");
+//        stage.sizeToScene();
+        stage.setMaximized(true);
+        stage.show();
 
-        primaryStage.setScene(new Scene(root, 1024, 800));
-        primaryStage.setTitle("CourseBoard");
-        primaryStage.sizeToScene();
-        primaryStage.show();
+
 
 //        closes all offending windows when main window is closed
-        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent event) {
                 Platform.exit();
             }
         });
 
-        mainStage = primaryStage;
+
+        mainStage = stage;
         writerReader = new WriterReader(boardManager);
-
-
     }
 
     private MenuBar initMenuBar() {
@@ -74,11 +101,8 @@ public class MainWindow extends Application {
         Menu menuEdit = new Menu("Edit");
 
         MenuItem addCourse = new MenuItem("Add Course");
-        addCourse.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                new AddCourseWindow(new CourseNode(new Course("", 0), boardManager));
-            }
+        addCourse.setOnAction(event -> {
+            new AddCourseWindow(new CourseNode(new Course("", 0), boardManager));
         });
         MenuItem clearAll = new MenuItem("Clear All");
         clearAll.setOnAction(new EventHandler<ActionEvent>() {

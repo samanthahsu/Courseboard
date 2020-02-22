@@ -5,6 +5,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -16,7 +17,7 @@ import java.util.*;
  * todo: move into the pane instead?*/
 public class InnerPaneEventHandler {
 
-    final DragOffset dragContext = new DragOffset(0,0);
+    final DragOffset dragContext = new DragOffset(0, 0);
     static final Color RECT_FILL = new Color(0.6784314f, 0.84705883f, 0.9019608f, 0.5f);
 
     Rectangle selectionBox;
@@ -57,50 +58,40 @@ public class InnerPaneEventHandler {
         public void handle(MouseEvent event) {
 //            reset drag indicator
             hasBeenDragged = false;
+            Node sourceNode = (Node) event.getSource();
 
 //            prepare for a drag
-            if (!event.isControlDown()) {
-                for (Node node : pane.getChildren()) {
-                    if (node instanceof CourseNode &&
-                            node.localToScene(node.getBoundsInLocal()).contains(event.getSceneX(), event.getSceneY())) {
+                if (sourceNode instanceof CourseNode) {
+                    pane.getScene().setCursor(Cursor.CLOSED_HAND);
 
-                        pane.getScene().setCursor(Cursor.CLOSED_HAND);
-
-//                        case for multiple selected item drag
-                        if (selectionModel.contains((CourseNode) node)) {
-                            dragStatus = DragStatus.START_ON_SELECTED_NODES;
-                            dragOffsetList = new ArrayList<>();
-//                            calculate and store offsets for drag
-                            for (CourseNode selectedNode : selectionModel.selection) {
-                                dragOffsetList.add(new DragOffset(selectedNode.getLayoutX() - event.getSceneX(), selectedNode.getLayoutY() - event.getSceneY()));
-                            }
-
-                        } else {
-//                            case for single item drag
-                            dragStatus = DragStatus.START_ON_SINGLE_NODE;
-                            deltaSingle = new DragOffset(node.getLayoutX() - event.getSceneX(), node.getLayoutY() - event.getSceneY());
+    //                        case for multiple selected item drag
+                    if (selectionModel.contains((CourseNode) sourceNode)) {
+                        dragStatus = DragStatus.START_ON_SELECTED_NODES;
+                        dragOffsetList = new ArrayList<>();
+    //                            calculate and store offsets for drag
+                        for (CourseNode selectedNode : selectionModel.selection) {
+                            dragOffsetList.add(new DragOffset(selectedNode.getLayoutX() - event.getSceneX(), selectedNode.getLayoutY() - event.getSceneY()));
                         }
-//                        store clicked on node
-                        anchorNode = (CourseNode) node;
-                        event.consume();
-                        break;
+                    } else {
+    //                            case for single item drag
+                        dragStatus = DragStatus.START_ON_SINGLE_NODE;
+                        deltaSingle = new DragOffset(sourceNode.getLayoutX() - event.getSceneX(), sourceNode.getLayoutY() - event.getSceneY());
                     }
+    //                        store clicked on node
+                    anchorNode = (CourseNode) sourceNode;
+                } else if (sourceNode instanceof AnchorPane){
+                    dragStatus = DragStatus.START_ON_CANVAS;
+                    dragContext.dx = event.getSceneX();
+                    dragContext.dy = event.getSceneY();
+
+                    selectionBox.setX(dragContext.dx);
+                    selectionBox.setY(dragContext.dy);
+                    selectionBox.setWidth(0);
+                    selectionBox.setHeight(0);
+
+                    pane.getChildren().add(selectionBox);
                 }
-            }
-
-            if (event.isShiftDown()) {
-                dragStatus = DragStatus.START_ON_CANVAS;
-                dragContext.dx = event.getSceneX();
-                dragContext.dy = event.getSceneY();
-
-                selectionBox.setX(dragContext.dx);
-                selectionBox.setY(dragContext.dy);
-                selectionBox.setWidth(0);
-                selectionBox.setHeight(0);
-
-                pane.getChildren().add(selectionBox);
-                event.consume();
-            }
+            event.consume();
         }
     };
 
@@ -128,6 +119,8 @@ public class InnerPaneEventHandler {
             selectionModel.log();
             pane.getChildren().remove(selectionBox);
 //            event.consume();
+            dragStatus = DragStatus.NO_DRAG;
+            hasBeenDragged = false;
         }
     };
 
@@ -174,7 +167,7 @@ public class InnerPaneEventHandler {
     };
 
 
-    private final class DragOffset {
+    private static final class DragOffset {
         public double dx;
         public double dy;
 

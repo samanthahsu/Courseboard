@@ -18,7 +18,7 @@ public class BoardManager  {
     CourseNode draggedCourseNode;
     Stats stats; // call update on this as needed
 
-    BoardManager(Pane pane, Stats stats) {
+    BoardManager(Pane pane, Stats stats, BoardNodeGestures nodeGestures) {
         this.board = pane;
         this.stats = stats;
     }

@@ -1,77 +1,87 @@
 package ui;
 
-import javafx.event.EventHandler;
-import javafx.scene.Node;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import model.Stats;
 
-public class Board extends StackPane {
+public class Board extends Pane {
 
-    static final int SCALE_DIVISOR = 400;
-    AnchorPane anchorPane = new AnchorPane();
-    final static double MIN_SCALE = 0.1;
-    final static double MAX_SCALE = 2;
-    Delta boardPanDelta;
-    Delta childDrag;
-    Node draggedChild;
+    DoubleProperty myScale = new SimpleDoubleProperty(1.0);
 
-    BoardManager manager;
-    InnerPaneEventHandler eventHandler;
+    public Board() {
 
+        setPrefSize(600, 600);
+        setStyle("-fx-background-color: lightgrey; -fx-border-color: blue;");
 
-    public Board(Stats stats) {
-        setPrefSize(1024, 1024);
-        getChildren().add(anchorPane);
+        // add scale transform
+        scaleXProperty().bind(myScale);
+        scaleYProperty().bind(myScale);
 
-//        todo: add notice of how much its been scaled
-        setOnScroll(new EventHandler<ScrollEvent>() {
-            @Override
-            public void handle(ScrollEvent event) {
-                double scrollY = event.getDeltaY();
-                double newScale = anchorPane.getScaleX() + scrollY / SCALE_DIVISOR;
-                if (newScale >= MIN_SCALE && newScale <= MAX_SCALE) {
-                    anchorPane.setScaleX(newScale);
-                    anchorPane.setScaleY(newScale);
-                }
-            }
+        // logging
+        addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
+            System.out.println(
+                    "canvas event: " + ( ((event.getSceneX() - getBoundsInParent().getMinX()) / getScale()) + ", scale: " + getScale())
+            );
+            System.out.println( "canvas bounds: " + getBoundsInParent());
         });
 
-        setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                boardPanDelta = new Delta(event.getX(), event.getY());
-            }
-        });
-
-        setOnMouseDragged(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                anchorPane.setTranslateX(anchorPane.getTranslateX() + event.getX() - boardPanDelta.x);
-                anchorPane.setTranslateY(anchorPane.getTranslateY() + event.getY() - boardPanDelta.y);
-                boardPanDelta.x = event.getX();
-                boardPanDelta.y = event.getY();
-            }
-        });
-
-        initInnerPane();
-        eventHandler = new InnerPaneEventHandler(anchorPane);
-        manager = new BoardManager(anchorPane, stats);
     }
 
-    private void initInnerPane() {
-        anchorPane.setBackground(new Background(new BackgroundFill(Color.DARKGRAY, null, null)));
-    }
+    /**
+     * Add a grid to the canvas, send it to back
+     */
+    public void addGrid() {
 
-    private static class Delta {
-        double x;
-        double y;
+        double w = getBoundsInLocal().getWidth();
+        double h = getBoundsInLocal().getHeight();
 
-        Delta(double x, double y) {
-            this.x = x;
-            this.y = y;
+        // add grid
+        Canvas grid = new Canvas(w, h);
+
+        // don't catch mouse events
+        grid.setMouseTransparent(true);
+
+        GraphicsContext gc = grid.getGraphicsContext2D();
+
+        gc.setStroke(Color.GRAY);
+        gc.setLineWidth(1);
+
+        // draw grid lines
+        double offset = 50;
+        for( double i=offset; i < w; i+=offset) {
+            // vertical
+            gc.strokeLine( i, 0, i, h);
+            // horizontal
+            gc.strokeLine( 0, i, w, i);
         }
+
+        getChildren().add( grid);
+
+        grid.toBack();
+    }
+
+    public double getScale() {
+        return myScale.get();
+    }
+
+    /**
+     * Set x/y scale
+     */
+    public void setScale( double scale) {
+        myScale.set(scale);
+    }
+
+    /**
+     * Set x/y pivot points
+     * @param x
+     * @param y
+     */
+    public void setPivot( double x, double y) {
+        setTranslateX(getTranslateX()-x);
+        setTranslateY(getTranslateY()-y);
     }
 }
