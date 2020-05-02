@@ -5,7 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import model.Course;
+import model.SavedCourse;
 
 public class EditCourseWindow extends CourseWindow {
 
@@ -15,12 +15,12 @@ public class EditCourseWindow extends CourseWindow {
 
     @Override
     protected void initTextFields() {
-        Course course = courseNode.getCourse();
-        courseCodeText = new TextField(course.getcID().toString());
-        notes = new TextField(course.getNotes());
-        creditsText = new TextField(Integer.toString(course.getCredits()));
-        preReqText = new TextField(course.getAllPrereqDisplayString());
-        coReqText = new TextField(course.getAllCoreqDisplayString());
+        SavedCourse savedCourse = courseNode.getSavedCourse();
+        courseCodeText = new TextField(savedCourse.getcID().toString());
+        notes = new TextField(savedCourse.getNotes());
+        creditsText = new TextField(Integer.toString(savedCourse.getCredits()));
+        preReqText = new TextField(savedCourse.getAllPrereqDisplayString());
+        coReqText = new TextField(savedCourse.getAllCoreqDisplayString());
     }
 
     @Override

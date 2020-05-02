@@ -2,16 +2,17 @@ package model;
 
 import javafx.scene.paint.Color;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
 
 /** data version of subjects and total credits in each subject*/
-public class Stats {
+public class SavedStats implements Serializable {
     private List<Record> records; // i want to keep the order
 
-    public Stats() {
+    public SavedStats() {
         records = new LinkedList<>();
     }
 

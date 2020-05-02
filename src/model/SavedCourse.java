@@ -1,13 +1,13 @@
 package model;
 
-import exceptions.CourseInputException;
 import ui.CourseList;
 
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Objects;
 
-public class Course implements Serializable {
+/** the savable version of courses*/
+public class SavedCourse implements Serializable {
 // there should be one unique course per course ID, the same pre-reqs and same co-reqs
 
 //  data
@@ -16,17 +16,21 @@ public class Course implements Serializable {
     int credits = 0;
     private CourseList prereq;
     private CourseList coreq;
+    private double posX;
+    private double posY;
 
-    public Course(String subject, int code, String description, int credits, LinkedList<String> prereq, LinkedList<String> coreq) {
-        cID = new CourseID(subject, code);
+    public SavedCourse(CourseID courseID, String description, int credits, LinkedList<String> prereq, LinkedList<String> coreq, double x, double y) {
+        cID = courseID;
         this.notes = description;
         this.credits = credits;
         this.prereq = new CourseList(prereq, CourseList.PRE_REQ);
         this.coreq = new CourseList(coreq, CourseList.CO_REQ);
+        this.posX = x;
+        this.posY = y;
     }
 
     //        dummy course for comparison
-    public Course(String subject, int code) {
+    public SavedCourse(String subject, int code) {
         this.cID = new CourseID(subject, code);
         this.prereq = new CourseList(CourseList.PRE_REQ);
         this.coreq = new CourseList(CourseList.CO_REQ);
@@ -36,9 +40,9 @@ public class Course implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Course)) return false;
-        Course course = (Course) o;
-        return Objects.equals(cID, course.cID);
+        if (!(o instanceof SavedCourse)) return false;
+        SavedCourse savedCourse = (SavedCourse) o;
+        return Objects.equals(cID, savedCourse.cID);
     }
 
     public String getCourseIDAsString() {

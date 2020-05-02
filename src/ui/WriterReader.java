@@ -54,6 +54,8 @@ public class WriterReader {
             savedBoard.populate(boardManager);
 
             System.out.println("file read successful!");
+
+
         } catch (IOException | ClassNotFoundException e) {
             showAlertWarning("read problems");
             e.printStackTrace();

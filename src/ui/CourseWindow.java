@@ -10,7 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import model.Course;
+import model.SavedCourse;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -142,15 +142,15 @@ public abstract class CourseWindow extends Stage {
  * updates course inside the node using info from fields
 */
     protected void updateCourseInfoHelper(String subjectCode, String courseCode, String credits, String prereqs, String coreqs) {
-        Course course = courseNode.getCourse();
-        course.setcIDSubject(subjectCode);
-        course.setcIDNumber(Integer.parseInt(courseCode));
-        course.setCredits(Integer.parseInt(credits));
-        course.setNotes("");
+        SavedCourse savedCourse = courseNode.getSavedCourse();
+        savedCourse.setcIDSubject(subjectCode);
+        savedCourse.setcIDNumber(Integer.parseInt(courseCode));
+        savedCourse.setCredits(Integer.parseInt(credits));
+        savedCourse.setNotes("");
         LinkedList<String> prereqList = new LinkedList<String>(Arrays.asList(prereqs.split(REQUISITE_COURSE_ID_SPLITTOR)));
-        course.setPreReq(prereqList);
+        savedCourse.setPreReq(prereqList);
         LinkedList<String> coreqList = new LinkedList<String>(Arrays.asList(coreqs.split(REQUISITE_COURSE_ID_SPLITTOR)));
-        course.setCoReq(coreqList);
+        savedCourse.setCoReq(coreqList);
 
         updateBoardManager();
     }

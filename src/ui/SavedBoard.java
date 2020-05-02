@@ -1,43 +1,39 @@
 package ui;
 
 import javafx.scene.Node;
-import model.Course;
+import model.SavedCourse;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 
-/** is the only serialized object*/
+/** todo the master serialized object
+ * contains Stats, list of Courses containing position info
+ * connections are drawn from looping over all the courses on load*/
 public class SavedBoard implements Serializable {
 
-    HashMap<Course, Position> courseList;
+    List<SavedCourse> savedCourseList;
 
     public SavedBoard(BoardManager manager) {
-        courseList = new HashMap<>();
+        savedCourseList = new ArrayList<>();
 
-        List<Node> nodes = manager.board.getChildren();
+        List<Node> nodes = manager.mainBoard.getChildren();
         for (Node node : nodes) {
-            if (node instanceof CourseNode) {
-                CourseNode courseNode = (CourseNode) node;
-                Course course = courseNode.getCourse();
-                Position thisPos = new Position(courseNode.getLayoutX(), courseNode.getLayoutY());
-                courseList.put(course, thisPos);
+            if (node instanceof CourseNode) { // todo keep separate list of all coursenodes in board manager to prevent extra looping
+                CourseNode cn = (CourseNode) node;
+//                todo remove savedcourse obj from coursenodes, however retain separate courseID field
+//                todo check if getLayoutX is the right coordinates
+                SavedCourse savedCourse = new SavedCourse(cn.getCourseId(), cn.getDescription, cn.getCredits, cn.getPreReqs, cn.getCoreqs, cn.getLayoutX(), cn.getLayoutY());
+                savedCourseList.add(savedCourse);
             }
         }
     }
 
-    /** fills boardmanager with new info, resetting the board to saved state*/
-    public void populate(BoardManager boardManager) {
-//        todo
+    public List<SavedCourse> getSavedCourseList() {
+        return savedCourseList;
     }
 
-    private static class Position implements Serializable {
-        double sceneX;
-        double sceneY;
-
-        public Position(double x, double y) {
-            this.sceneX = x;
-            this.sceneY = y;
-        }
+    /** todo fills boardmanager with new info, resetting the board to saved state*/
+    public void populate(BoardManager boardManager) {
     }
 }

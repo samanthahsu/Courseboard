@@ -14,11 +14,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import model.Course;
+import model.SavedCourse;
 
 public class CourseNode extends BoardComponent {
 
-//    todo add another observer to edit the coursenode contents according to course contents
+//    todo add another observer to edit the courseNode contents according to course contents
     private static final double H_PAD = 20;
     private static final double V_PAD = 20;
     private static final double V_SPAC = 5;
@@ -35,14 +35,14 @@ public class CourseNode extends BoardComponent {
     private Color borderColor = Color.GRAY;
     private VBox mainBody;
 
-    private Course course;
+    private SavedCourse savedCourse;
 
     private BoardManager boardManager;
 
 
-    public CourseNode(Course c, BoardManager boardManager) {
+    public CourseNode(SavedCourse c, BoardManager boardManager) {
         this.boardManager = boardManager;
-        course = c;
+        savedCourse = c;
         updateColors();
         formatVbox();
         createContextMenu();
@@ -84,21 +84,21 @@ public class CourseNode extends BoardComponent {
     }
 
     private void formatCreditsTxt() {
-        creditsTxt = new Text("Credits: " + Integer.toString(course.getCredits()));
+        creditsTxt = new Text("Credits: " + Integer.toString(savedCourse.getCredits()));
     }
 
     private void initCourseCodeTxt() {
-        courseIdTxt = new Text("ID: " + course.getcID().toString());
+        courseIdTxt = new Text("ID: " + savedCourse.getcID().toString());
     }
 
     private void formatDesFlow() {
-        notesTxt = new Text(course.getNotes());
+        notesTxt = new Text(savedCourse.getNotes());
         TextFlow tf = new TextFlow(notesTxt);
         tf.maxWidthProperty().bind(mainBody.widthProperty().subtract(H_PAD*2));
     }
 
-    public Course getCourse() {
-        return course;
+    public SavedCourse getSavedCourse() {
+        return savedCourse;
     }
 
     public BoardManager getBoardManager() {
@@ -116,12 +116,12 @@ public class CourseNode extends BoardComponent {
 //    REQUIRE: @missingCourseIds has key @this already
 //      @missingCourseIds has been suitably updated
     public void updateDisplay() {
-        courseIdTxt.setText(course.getcID().toString());
-        creditsTxt.setText(Integer.toString(course.getCredits()));
+        courseIdTxt.setText(savedCourse.getcID().toString());
+        creditsTxt.setText(Integer.toString(savedCourse.getCredits()));
         CourseList courseList = new CourseList(boardManager.missingCourseIds.get(this), CourseList.PRE_REQ);
 //        todo same for coreq
         preReqsText.setText(courseList.toDisplayString());
-        coReqsText.setText(course.getAllCoreqDisplayString());
+        coReqsText.setText(savedCourse.getAllCoreqDisplayString());
     }
 
     private void createContextMenu() {
