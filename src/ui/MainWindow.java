@@ -4,7 +4,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
@@ -58,7 +57,7 @@ public class MainWindow extends Application {
         pane.addEventFilter(MouseEvent.MOUSE_DRAGGED, boardGestures.getOnMouseDraggedEventHandler());
         pane.addEventFilter(MouseEvent.MOUSE_PRESSED, boardGestures.getOnMousePressedEventHandler());
 
-        boardManager = new BoardManager(board, stats, nodeGestures);
+        boardManager = new BoardManager(board, statListView, nodeGestures);
 
 //        place all in border pane
         root.setCenter(pane);
@@ -70,7 +69,6 @@ public class MainWindow extends Application {
 //        stage.sizeToScene();
         stage.setMaximized(true);
         stage.show();
-
 
 
 //        closes all offending windows when main window is closed

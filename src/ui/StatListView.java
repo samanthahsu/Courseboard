@@ -1,6 +1,7 @@
 package ui;
 
 import javafx.scene.control.ListView;
+import model.Course;
 import model.Stats;
 
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.Map;
 //should be more than an interface to more easily update data
 public class StatListView extends ListView<StatListCell> {
 
+//    contains course subject and total number of credits
     Map<String, Integer> facultyMap = new HashMap<>();
 
     StatListView(Stats stats) {
@@ -22,7 +24,8 @@ public class StatListView extends ListView<StatListCell> {
      * ASSUMES: faculty is represented by the first 4 characters of a course ID
      **/
     public void update(CourseNode courseNode, Operation operation) {
-        String courseFaculty = courseNode.getCourse().getSubject();
+        Course course = courseNode.getCourse();
+        String courseFaculty = course.getSubject();
         int courseCredits = courseNode.getCourse().getCredits();
 
         if (operation == Operation.ADD) {
@@ -36,11 +39,11 @@ public class StatListView extends ListView<StatListCell> {
             assert (storedCredit != null);
             facultyMap.put(courseFaculty, storedCredit - courseCredits);
         }
-        UpdateDisplay();
+        updateDisplay();
     }
 
     //    updates ui based on faculties
-    private void UpdateDisplay() {
+    private void updateDisplay() {
         getItems().clear();
         for (Map.Entry mapElement : facultyMap.entrySet()) {
             String key = (String) mapElement.getKey();

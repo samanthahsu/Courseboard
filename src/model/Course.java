@@ -41,6 +41,10 @@ public class Course implements Serializable {
         return Objects.equals(cID, course.cID);
     }
 
+    public String getCourseIDAsString() {
+        return cID.toString();
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(cID);

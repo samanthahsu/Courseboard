@@ -1,58 +1,60 @@
 package ui;
 
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Color;
-import model.Course;
-import model.Stats;
 
 import java.util.*;
+import java.util.Map.Entry;
 
 public class BoardManager  {
 
     Set<Connection> connectionSet = new HashSet<>(); // this keeps track of the valid connections (fulfilled requisites) we have
     Map<CourseNode, List<String>> missingCourseIds = new HashMap<>(); // map of the course wish-list of each course
 
-
-    Pane board; // the pane everything is being attached to
+    Board board; // the pane everything is being attached to
     CourseNode draggedCourseNode;
-    Stats stats; // call update on this as needed
+    StatListView statListView; // call update on this as needed
+    BoardNodeGestures nodeGestures;
 
-    BoardManager(Pane pane, Stats stats, BoardNodeGestures nodeGestures) {
+    BoardManager(Board pane, StatListView statListView, BoardNodeGestures nodeGestures) {
         this.board = pane;
-        this.stats = stats;
+        this.statListView = statListView;
+        this.nodeGestures = nodeGestures;
     }
 
 /**
-   updates set based on removal or addition of a course
+   update set on removal or addition of a course
     post:
       missingCourseIds: added new key with corresponding list
       connectionSet: contains all new connections from and to newNode
-      pane: holds and displays newNode and its connections
+      board: holds and displays newNode and its connections
+      newNode: given proper event filters for dragging
 */
     public void addCourseUpdate(CourseNode newNode) {
 //      find and remove the missing courses that are no longer missing because addition of newNode
 //            also adds new connection representing the dependency on newNode
+//        make layout of newNode not null
+        board.getChildren().add(newNode);
         removeFulfilledAddConnections(newNode);
         addNewNodeToMap(newNode);
-        board.getChildren().add(newNode);
-        Course newCourse = newNode.getCourse();
-        stats.addNewRecord(newCourse.getSubject(), newCourse.getCredits(), Color.ORANGE); //todo
-//        statListView.update(newNode, Operation.ADD);
+        newNode.addEventFilter( MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
+        newNode.addEventFilter( MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
+
+        statListView.update(newNode, Operation.ADD); //todo
     }
 
     private void addNewNodeToMap(CourseNode newNode) {
         //        todo same thing for coreqs
 //        makes new list of courses required by newNode, then add newNode and it's list to the missing courses list
-        List<String> missingPrereqs = new LinkedList<>(newNode.getCourse().getPrereqs());
-        for (String req : newNode.getCourse().getPrereqs()) {
-            for (Map.Entry element : missingCourseIds.entrySet()) {
-                CourseNode existingNode = (CourseNode) element.getKey();
+        List<String> missingPrereqs = new LinkedList<>(newNode.getCourse().getPrereqs()); // will hold missing prereqs of new node after loop
 
-                if (req.equals(existingNode.getCourse().getcID().toString())) {
+        for (String reqString : newNode.getCourse().getPrereqs()) {
+            for (Entry element : missingCourseIds.entrySet()) {
+                CourseNode existingNode = (CourseNode) element.getKey(); // gives access to each node on the board
+
+                if (reqString.equals(existingNode.getCourse().getCourseIDAsString())) {
                     addConnection(newNode, existingNode);
 //                    updateNodeRequisiteCourses(existingNode); //todo make list on existing course display only missing courses
-                    missingPrereqs.remove(req);
+                    missingPrereqs.remove(reqString);
                     break;
                 }
             }
@@ -60,15 +62,17 @@ public class BoardManager  {
         missingCourseIds.put(newNode, missingPrereqs); // add new course to missing course map
     }
 
+//    todo: connection being added, but not visible on display.
     private void addConnection(CourseNode newNode, CourseNode existingNode) {
         Connection newConnection = new Connection(newNode, existingNode);
         connectionSet.add(newConnection);
         board.getChildren().add(newConnection);
+        System.out.println("New connection added!");
     }
 
 
     private void removeFulfilledAddConnections(CourseNode newNode) {
-        for (Map.Entry element : missingCourseIds.entrySet()) {
+        for (Entry element : missingCourseIds.entrySet()) {
             List<String> reqList = (List<String>) element.getValue();
             String id = newNode.getCourse().getcID().toString();
             if (reqList.contains(id)) {
@@ -90,8 +94,8 @@ public class BoardManager  {
         missingCourseIds.remove(deletedNode);
         board.getChildren().remove(deletedNode);
 
-        stats.removeRecord(deletedNode.getCourse().getcID());
-//        statListView.update(deletedNode, Operation.REMOVE);
+//        statListView.removeRecord(deletedNode.getCourse().getcID());
+        statListView.update(deletedNode, Operation.REMOVE);
     }
 
 /**
@@ -137,22 +141,11 @@ public class BoardManager  {
 //        everything in board dies
     public void clearAll() {
 //        todo alert before doing this
-        stats.clearAll();
+        statListView.clearAll();
         connectionSet.clear();
         missingCourseIds.clear();
         board.getChildren().clear();
     }
-
-//    public void addTerm(String termName) {
-////        todo
-//        TermNode newTerm = new TermNode(termName, this);
-//        boardPane.getChildren().add(newTerm);
-//    }
-
-//    public void removeTerm(TermNode deletedTerm) {
-////        todo set all its children courses at the current position (get current then set after removal from container and dumping into pane)
-//        boardPane.getChildren().remove(deletedTerm);
-//    }
 
     public void onDragDetectedCourseNode(CourseNode courseNode, MouseEvent event) {
 //        Dragboard db = courseNode.startDragAndDrop(TransferMode.COPY_OR_MOVE);

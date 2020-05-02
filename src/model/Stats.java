@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 
-/** data version of helpful stats of what is actually on the board*/
+/** data version of subjects and total credits in each subject*/
 public class Stats {
     private List<Record> records; // i want to keep the order
 
@@ -15,35 +15,45 @@ public class Stats {
         records = new LinkedList<>();
     }
 
-//    todo change this to work with cid
-    public void addNewRecord(String subject, int credits, Color color) {
-        Record newR = new Record(subject, credits, color);
+    /**
+     * post: new record added to records list if it is not a duplicate*/
+    public void addNewRecord(CourseID courseID, int credits, Color color) {
+        Record newR = new Record(courseID, credits, color);
         if (!records.contains(newR)) {
             records.add(newR);
         }
     }
 
+    /** removes record matching course ID from the records list*/
     public void removeRecord(CourseID cID){
-        records.remove(new Record(cID.subject, 0, null));
+        records.remove(new Record(cID, 0, null));
     }
 
-    public void addToCredit(String subject, int additor){}
+    /** todo increases total credits in record list for a particular subject*/
+    public void addToCredit(String subject, int addAmount){
+    }
 
-    public void changeColor(String subject, Color color){}
+    /** todo changes color coding of a particular subject*/
+    public void changeColor(String subject, Color color){
+    }
 
+    /** clears all records from the records list
+     * should only be called when the board is cleared to maintain consistency*/
     public void clearAll(){records = new LinkedList<>();}
 
+    /** returns list of records*/
     public List<Record> getRecords() {
         return records;
     }
 
-    private class Record {
+    /** private class for storing statistic records*/
+    private static class Record {
         String subject;
         int credits;
         Color color;
 
-        public Record(String subject, int credits, Color color) {
-            this.subject = subject;
+        public Record(CourseID courseID, int credits, Color color) {
+            this.subject = courseID.subject;
             this.credits = credits;
             this.color = color;
         }

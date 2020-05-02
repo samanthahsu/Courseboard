@@ -118,8 +118,8 @@ public abstract class CourseWindow extends Stage {
         String subjectCode = subjectCodeText.getText().toUpperCase();
         String courseCode = courseCodeText.getText();
         String credits = creditsText.getText();
-        String prereqs = preReqText.getText();
-        String coreqs = coReqText.getText();
+        String prereqs = preReqText.getText().toUpperCase();
+        String coreqs = coReqText.getText().toUpperCase();
 
         if (subjectCode.matches(".*\\W.*")) {
             throw new BadSubjectCodeException();

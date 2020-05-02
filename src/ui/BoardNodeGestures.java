@@ -11,7 +11,6 @@ import javafx.scene.input.MouseEvent;
 class BoardNodeGestures {
 
     private BoardDragContext nodeDragContext = new BoardDragContext();
-
     Board canvas;
 
     public BoardNodeGestures( Board canvas) {

@@ -1,5 +1,8 @@
 package model;
 
+/** courseID consists of the course subject: usually 3 to 4 characters
+ * and a course number
+ * this is to help to identify courses of the same discipline quicker, and to ensure more correct*/
 public class CourseID {
     String subject;
     int number;

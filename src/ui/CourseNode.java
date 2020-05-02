@@ -72,7 +72,7 @@ public class CourseNode extends BoardComponent {
         mainBody.setMinSize(MIN_WIDTH, MIN_HEIGHT);
 
         initCourseCodeTxt();
-        formatDescripFlow();
+        formatDesFlow();
         formatCreditsTxt();
         preReqsText = new Text("Pre-reqs here");
         preReqsText.setStroke(Color.RED);
@@ -91,7 +91,7 @@ public class CourseNode extends BoardComponent {
         courseIdTxt = new Text("ID: " + course.getcID().toString());
     }
 
-    private void formatDescripFlow() {
+    private void formatDesFlow() {
         notesTxt = new Text(course.getNotes());
         TextFlow tf = new TextFlow(notesTxt);
         tf.maxWidthProperty().bind(mainBody.widthProperty().subtract(H_PAD*2));
@@ -150,4 +150,6 @@ public class CourseNode extends BoardComponent {
             }
         });
     }
+
+
 }
