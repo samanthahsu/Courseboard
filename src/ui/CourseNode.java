@@ -14,7 +14,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import model.CourseID;
 import model.SavedCourse;
+
+import java.util.List;
+import java.util.Set;
 
 public class CourseNode extends BoardComponent {
 
@@ -35,14 +39,20 @@ public class CourseNode extends BoardComponent {
     private Color borderColor = Color.GRAY;
     private VBox mainBody;
 
-    private SavedCourse savedCourse;
+//    some data needed to be displayed
+    private CourseID courseID;
+    private String notes;
+    /** strings for ease of comparison between title and requirement without extra parsing*/
+    private Set<String> prereqList;
+    private Set<String> coreqList;
 
     private BoardManager boardManager;
 
 
-    public CourseNode(SavedCourse c, BoardManager boardManager) {
+    /** constructor of empty courseNode
+     * boardManager essential for event filtering*/
+    public CourseNode(BoardManager boardManager) {
         this.boardManager = boardManager;
-        savedCourse = c;
         updateColors();
         formatVbox();
         createContextMenu();

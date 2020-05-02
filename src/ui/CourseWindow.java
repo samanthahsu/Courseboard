@@ -114,7 +114,7 @@ public abstract class CourseWindow extends Stage {
 
     /**checks for valid input
      * capitalizes all course codes
-     * highlighting if not valid
+     * highlighting text field if input not valid
      * if ok @updateCourseInfoHelper*/
     protected boolean updateCourseInfo() throws CourseInputException {
         String subjectCode = subjectCodeText.getText().toUpperCase();

@@ -16,8 +16,6 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import model.SavedCourse;
-import model.SavedStats;
 
 import java.io.File;
 
@@ -34,8 +32,7 @@ public class MainWindow extends Application {
         BorderPane root = new BorderPane();
         MenuBar menuBar = initMenuBar();
 
-        SavedStats savedStats = new SavedStats();
-        StatListView statListView = new StatListView(savedStats);
+        StatListView statListView = new StatListView();
 
         Board board = new Board();
         BoardNodeGestures nodeGestures = new BoardNodeGestures(board); // have to add event filter from this to every draggable thing
@@ -100,7 +97,7 @@ public class MainWindow extends Application {
 
         MenuItem addCourse = new MenuItem("Add Course");
         addCourse.setOnAction(event -> {
-            new AddCourseWindow(new CourseNode(new SavedCourse("", 0), boardManager));
+            new AddCourseWindow(boardManager);
         });
         MenuItem clearAll = new MenuItem("Clear All");
         clearAll.setOnAction(new EventHandler<ActionEvent>() {

@@ -6,8 +6,9 @@ import javafx.scene.control.TextField;
 /** initializes window for adding a new course to the board*/
 public class AddCourseWindow extends CourseWindow {
 
-    AddCourseWindow(CourseNode cn) {
-        super(cn);
+    /**creates blank courseNode*/
+    AddCourseWindow(BoardManager boardManager) {
+        super(new CourseNode(boardManager));
     }
 
     /** all text fields are initialized as empty*/
