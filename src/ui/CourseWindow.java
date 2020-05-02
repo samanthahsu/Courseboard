@@ -19,6 +19,8 @@ import java.util.LinkedList;
 //todo separate window for prereq adding
 public abstract class CourseWindow extends Stage {
 
+    /** static string used to recognize prereq and coreqs input by user
+     * todo: make prereq, coreq into infinitely many entry boxes, separating each course entry*/
     static final String REQUISITE_COURSE_ID_SPLITTOR = ", ";
 
     protected CourseNode courseNode;
@@ -153,6 +155,8 @@ public abstract class CourseWindow extends Stage {
         updateBoardManager();
     }
 
+    /** called after a new course obj has been instantiated,
+     * that the board needs to respond to (add new node or edit existing)*/
     protected abstract void updateBoardManager();
 
 }

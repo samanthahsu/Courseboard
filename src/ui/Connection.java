@@ -3,9 +3,11 @@ package ui;
 import javafx.scene.layout.Region;
 import javafx.scene.shape.*;
 
-public class Connection extends Region implements Observer {
+/** class representing lines connecting associated course nodes*/
 //    TODO make connection update with change of requisites
-
+public class Connection extends Region implements Observer {
+    /*source: node that needs this
+    * destination: node that is needed (requisite speaking)*/
     CourseNode source;
     CourseNode destination;
     boolean connected;
@@ -35,6 +37,8 @@ public class Connection extends Region implements Observer {
         return destination;
     }
 
+    /** draws an arc from source to destination
+     * todo make it also draw arrowhead and in different colours, symbolizing different statuses*/
     public void draw() {
         path = new Path();
         moveTo = new MoveTo();
@@ -50,9 +54,6 @@ public class Connection extends Region implements Observer {
         getChildren().add(path);
     }
 
-    public void listen() {
-    }
-
     public void connect() {
         connected = true;
     }
@@ -61,6 +62,7 @@ public class Connection extends Region implements Observer {
         connected = false;
     }
 
+    /** redraws path if isDraw true, otherwise removes path*/
     @Override
     public void update(boolean isDraw) {
         if (isDraw) {
