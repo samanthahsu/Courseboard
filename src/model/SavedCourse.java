@@ -6,7 +6,8 @@ import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Objects;
 
-/** the savable version of courses*/
+/** the savable version of courses,
+ * holds all data needed to rebuild one completely*/
 public class SavedCourse implements Serializable {
 // there should be one unique course per course ID, the same pre-reqs and same co-reqs
 
@@ -14,17 +15,20 @@ public class SavedCourse implements Serializable {
     private CourseID cID;
     private String notes = "Notes";
     int credits = 0;
-    private CourseList prereq;
-    private CourseList coreq;
-    private double posX;
-    private double posY;
 
-    public SavedCourse(CourseID courseID, String description, int credits, LinkedList<String> prereq, LinkedList<String> coreq, double x, double y) {
-        cID = courseID;
+    private CourseList preReq;
+    private CourseList coReq;
+    private double posX = 0;
+    private double posY = 0;
+
+    public SavedCourse(CourseID cID, String description, int credits,
+                       LinkedList<String> preReq, LinkedList<String> coReq,
+                       double x, double y) {
+        this.cID = cID;
         this.notes = description;
         this.credits = credits;
-        this.prereq = new CourseList(prereq, CourseList.PRE_REQ);
-        this.coreq = new CourseList(coreq, CourseList.CO_REQ);
+        this.preReq = new CourseList(preReq, CourseList.PRE_REQ);
+        this.coReq = new CourseList(coReq, CourseList.CO_REQ);
         this.posX = x;
         this.posY = y;
     }
@@ -32,8 +36,8 @@ public class SavedCourse implements Serializable {
     //        dummy course for comparison
     public SavedCourse(String subject, int code) {
         this.cID = new CourseID(subject, code);
-        this.prereq = new CourseList(CourseList.PRE_REQ);
-        this.coreq = new CourseList(CourseList.CO_REQ);
+        this.preReq = new CourseList(CourseList.PRE_REQ);
+        this.coReq = new CourseList(CourseList.CO_REQ);
     }
 
 
@@ -68,16 +72,16 @@ public class SavedCourse implements Serializable {
         this.cID.subject = subject;
     }
 
-    public CourseList getPrereq() {
-        return prereq;
+    public CourseList getPreReq() {
+        return preReq;
     }
 
-    public void setPrereq(CourseList prereq) {
-        this.prereq = prereq;
+    public void setPreReq(CourseList preReq) {
+        this.preReq = preReq;
     }
 
-    public void setCoreq(CourseList coreq) {
-        this.coreq = coreq;
+    public void setCoReq(CourseList coReq) {
+        this.coReq = coReq;
     }
 
     public String getNotes() {
@@ -92,31 +96,46 @@ public class SavedCourse implements Serializable {
         return credits;
     }
 
+    /** credits is less than 1, will set to 1*/
     public void setCredits(int credits) {
+        if (credits <= 0) credits = 1;
         this.credits = credits;
     }
 
     public CourseList getPrereqs() {
-        return prereq;
+        return preReq;
     }
 
-    public CourseList getCoreq() {
-        return coreq;
+    public CourseList getCoReq() {
+        return coReq;
     }
 
-    public String getAllPrereqDisplayString() {
-        return prereq.toDisplayString();
+    public String getAllPreReqDisplayString() {
+        return preReq.toDisplayString();
     }
 
-    public String getAllCoreqDisplayString() {
-        return coreq.toDisplayString();
+    public String getAllCoReqDisplayString() {
+        return coReq.toDisplayString();
     }
 
     public void setPreReq(LinkedList<String> newPrereq) {
-        prereq = new CourseList(newPrereq, CourseList.PRE_REQ);
+        preReq = new CourseList(newPrereq, CourseList.PRE_REQ);
     }
 
     public void setCoReq(LinkedList<String> newCoreq) {
-        coreq = new CourseList(newCoreq, CourseList.CO_REQ);
+        coReq = new CourseList(newCoreq, CourseList.CO_REQ);
+    }
+
+    /**saves the x and y position of the course on the board*/
+    public void setPosition(double posX, double posY) {
+        this.posX = posX;
+        this.posY = posY;
+    }
+
+    public double getPosX() {
+        return posX;
+    }
+    public double getPosY() {
+        return posY;
     }
 }

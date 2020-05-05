@@ -1,6 +1,9 @@
 package ui;
 
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.*;
 
 /** class representing lines connecting associated course nodes*/
@@ -26,6 +29,7 @@ public class Connection extends Region implements Observer {
         this.destination = destination;
         destination.addObserver(this);
         connected = true;
+
         draw();
     }
 
@@ -42,14 +46,14 @@ public class Connection extends Region implements Observer {
     public void draw() {
         path = new Path();
         moveTo = new MoveTo();
-        moveTo.setX(source.getLayoutX());
-        moveTo.setY(source.getLayoutY());
+        moveTo.setX(source.getTranslateX());
+        moveTo.setY(source.getTranslateY());
 
         arcTo = new ArcTo();
-        arcTo.setX(destination.getLayoutX());
-        arcTo.setY(destination.getLayoutY());
-        arcTo.setRadiusX(Math.abs(source.getLayoutX() - destination.getLayoutX()));
-        arcTo.setRadiusY(Math.abs(source.getLayoutY() - destination.getLayoutY()));
+        arcTo.setX(destination.getTranslateX());
+        arcTo.setY(destination.getTranslateY());
+        arcTo.setRadiusX(Math.abs(source.getTranslateX() - destination.getTranslateX()));
+        arcTo.setRadiusY(Math.abs(source.getTranslateY() - destination.getTranslateY()));
         path.getElements().addAll(moveTo, arcTo);
         getChildren().add(path);
     }

@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.BorderPane;
@@ -18,6 +19,7 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.File;
+import java.util.HashMap;
 
 public class MainWindow extends Application {
 
@@ -32,7 +34,7 @@ public class MainWindow extends Application {
         BorderPane root = new BorderPane();
         MenuBar menuBar = initMenuBar();
 
-        StatListView statListView = new StatListView();
+        StatListView statListView = new StatListView(new HashMap<>());
 
         Board board = new Board();
         BoardNodeGestures nodeGestures = new BoardNodeGestures(board); // have to add event filter from this to every draggable thing
@@ -60,11 +62,16 @@ public class MainWindow extends Application {
         root.setCenter(pane);
         root.setTop(menuBar);
         root.setRight(statListView);
+        root.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                globalKeyPressed(event);
+            }
+        });
 
         stage.setScene(new Scene(root, 1024, 800));
         stage.setTitle("CourseBoard");
 //        stage.sizeToScene();
-        stage.setMaximized(true);
         stage.show();
 
 
@@ -122,24 +129,32 @@ public class MainWindow extends Application {
         });
         MenuItem openItem = new MenuItem("Open...");
         openItem.setOnAction(event -> {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Open File...");
-            fileChooser.setInitialDirectory(new File(WriterReader.FILE_ROOT));
-            File selectedFile = fileChooser.showOpenDialog(mainStage);
-            writerReader.read(selectedFile);
+            open();
         });
         MenuItem saveItem = new MenuItem("Save");
         saveItem.setOnAction(event -> {
-            if (currFile != null) {
-                writerReader.write(currFile);
-            } else {
-                saveAs();
-            }
+            save();
         });
         MenuItem saveAsItem = new MenuItem("Save As...");
         saveAsItem.setOnAction(event -> saveAs());
         menuFile.getItems().addAll(newItem, openItem, saveAsItem, saveItem);
         return menuFile;
+    }
+
+    private void open() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open File...");
+        fileChooser.setInitialDirectory(new File(WriterReader.FILE_ROOT));
+        File selectedFile = fileChooser.showOpenDialog(mainStage);
+        writerReader.read(selectedFile);
+    }
+
+    private void save() {
+        if (currFile != null) {
+            writerReader.write(currFile);
+        } else {
+            saveAs();
+        }
     }
 
     /** common to both save and saveAs
@@ -154,6 +169,24 @@ public class MainWindow extends Application {
 
         writerReader.write(file);
         currFile = file;
+    }
+
+    /** hotkey configuration
+     * todo: more shortcuts for add delete courses*/
+    public void globalKeyPressed(KeyEvent e) {
+        if (e.isControlDown() && e.isShiftDown() && e.getCharacter().equals("s")) {
+            saveAs();
+        }
+        if (e.isControlDown()) {
+            switch (e.getCharacter()) {
+                case "s":
+                    save();
+                    break;
+                case "o":
+                    open();
+                    break;
+            }
+        }
     }
 
 }

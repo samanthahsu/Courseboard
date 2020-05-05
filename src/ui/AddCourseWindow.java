@@ -2,13 +2,14 @@ package ui;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import model.SavedCourse;
 
 /** initializes window for adding a new course to the board*/
 public class AddCourseWindow extends CourseWindow {
 
     /**creates blank courseNode*/
     AddCourseWindow(BoardManager boardManager) {
-        super(new CourseNode(boardManager));
+        super(new CourseNode(boardManager, new SavedCourse("NONE", 0)));
     }
 
     /** all text fields are initialized as empty*/

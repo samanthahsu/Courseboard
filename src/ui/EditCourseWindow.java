@@ -19,8 +19,8 @@ public class EditCourseWindow extends CourseWindow {
         courseCodeText = new TextField(savedCourse.getcID().toString());
         notes = new TextField(savedCourse.getNotes());
         creditsText = new TextField(Integer.toString(savedCourse.getCredits()));
-        preReqText = new TextField(savedCourse.getAllPrereqDisplayString());
-        coReqText = new TextField(savedCourse.getAllCoreqDisplayString());
+        preReqText = new TextField(savedCourse.getAllPreReqDisplayString());
+        coReqText = new TextField(savedCourse.getAllCoReqDisplayString());
     }
 
     @Override

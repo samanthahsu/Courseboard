@@ -14,10 +14,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import model.CourseID;
 import model.SavedCourse;
 
-import java.util.List;
 import java.util.Set;
 
 public class CourseNode extends BoardComponent {
@@ -40,19 +38,19 @@ public class CourseNode extends BoardComponent {
     private VBox mainBody;
 
 //    some data needed to be displayed
-    private CourseID courseID;
-    private String notes;
-    /** strings for ease of comparison between title and requirement without extra parsing*/
-    private Set<String> prereqList;
-    private Set<String> coreqList;
+    private SavedCourse savedCourse;
 
     private BoardManager boardManager;
+    private Set<Connection> connectionsSet;
+    // todo used to update when the coursenode gets dragged around
 
 
-    /** constructor of empty courseNode
+    /** constructor of courseNode from savedCourse
+     * courseNode should always have non NULL savedCourse
      * boardManager essential for event filtering*/
-    public CourseNode(BoardManager boardManager) {
+    public CourseNode(BoardManager boardManager, SavedCourse savedCourse) {
         this.boardManager = boardManager;
+        this.savedCourse = savedCourse;
         updateColors();
         formatVbox();
         createContextMenu();
@@ -104,7 +102,7 @@ public class CourseNode extends BoardComponent {
     private void formatDesFlow() {
         notesTxt = new Text(savedCourse.getNotes());
         TextFlow tf = new TextFlow(notesTxt);
-        tf.maxWidthProperty().bind(mainBody.widthProperty().subtract(H_PAD*2));
+        tf.maxWidthProperty().bind(mainBody.widthProperty().subtract(H_PAD * 2));
     }
 
     public SavedCourse getSavedCourse() {
@@ -123,15 +121,27 @@ public class CourseNode extends BoardComponent {
         this.courseIdTxt.setText(courseCodeTxt);
     }
 
-//    REQUIRE: @missingCourseIds has key @this already
-//      @missingCourseIds has been suitably updated
+    public void addConnection(Connection c) {
+        connectionsSet.add(c);
+    }
+
+    public void removeConnection(Connection c) {
+        connectionsSet.remove(c);
+    }
+
+/**
+    REQUIRE: @missingCourseIds has key @this already
+      @missingCourseIds has been suitably updated
+    Populates displayed node with data from @savedCourse
+    assumes @savedCourse has already been updated accordingly
+*/
     public void updateDisplay() {
-        courseIdTxt.setText(savedCourse.getcID().toString());
-        creditsTxt.setText(Integer.toString(savedCourse.getCredits()));
-        CourseList courseList = new CourseList(boardManager.missingCourseIds.get(this), CourseList.PRE_REQ);
-//        todo same for coreq
-        preReqsText.setText(courseList.toDisplayString());
-        coReqsText.setText(savedCourse.getAllCoreqDisplayString());
+        courseIdTxt.setText("ID: " + savedCourse.getcID().toString());
+        creditsTxt.setText("Credits: " + savedCourse.getCredits());
+//        requirements are all stored in boardManager todo same for coreq
+        CourseList preReqList = new CourseList(boardManager.missingCourseIds.get(this), CourseList.PRE_REQ);
+        preReqsText.setText("PreReqs: " + preReqList.toDisplayString());
+        coReqsText.setText(savedCourse.getAllCoReqDisplayString());
     }
 
     private void createContextMenu() {
@@ -161,5 +171,12 @@ public class CourseNode extends BoardComponent {
         });
     }
 
+/** Pre: courseNode position has changed
+ * Post: redraws all connections to match position*/
+    public void redrawConnections() {
+        for(Connection c : connectionsSet) {
+            c.draw();
+        }
 
+    }
 }

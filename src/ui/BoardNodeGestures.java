@@ -1,7 +1,6 @@
 package ui;
 
 import javafx.event.EventHandler;
-import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 
 
@@ -37,11 +36,10 @@ class BoardNodeGestures {
             nodeDragContext.mouseAnchorX = event.getSceneX();
             nodeDragContext.mouseAnchorY = event.getSceneY();
 
-            Node node = (Node) event.getSource();
+            CourseNode node = (CourseNode) event.getSource();
 
             nodeDragContext.translateAnchorX = node.getTranslateX();
             nodeDragContext.translateAnchorY = node.getTranslateY();
-
         }
 
     };
@@ -55,11 +53,12 @@ class BoardNodeGestures {
 
             double scale = canvas.getScale();
 
-            Node node = (Node) event.getSource();
+            CourseNode node = (CourseNode) event.getSource();
 
             node.setTranslateX(nodeDragContext.translateAnchorX + (( event.getSceneX() - nodeDragContext.mouseAnchorX) / scale));
             node.setTranslateY(nodeDragContext.translateAnchorY + (( event.getSceneY() - nodeDragContext.mouseAnchorY) / scale));
 
+            node.redrawConnections();
             event.consume();
 
         }

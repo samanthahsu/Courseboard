@@ -53,11 +53,11 @@ public class WriterReader {
             SavedBoard savedBoard = (SavedBoard) objectInputStream.readObject();
             savedBoard.populate(boardManager);
 
-            System.out.println("file read successful!");
+            System.out.println("File read successful!");
 
 
         } catch (IOException | ClassNotFoundException e) {
-            showAlertWarning("read problems");
+            showAlertWarning("file read oopsies!");
             e.printStackTrace();
         }
     }

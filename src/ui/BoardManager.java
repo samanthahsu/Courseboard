@@ -12,13 +12,13 @@ public class BoardManager  {
     Map<CourseNode, List<String>> missingCourseIds = new HashMap<>(); // map of the course wish-list of each course
 
     Board mainBoard; // the pane everything is being attached to
-    CourseNode draggedCourseNode;
+    CourseNode selectedCourseNode;
     StatListView statListView; // call update on this as needed
     BoardNodeGestures nodeGestures;
 
     /**constructor*/
-    BoardManager(Board pane, StatListView statListView, BoardNodeGestures nodeGestures) {
-        this.mainBoard = pane;
+    BoardManager(Board board, StatListView statListView, BoardNodeGestures nodeGestures) {
+        this.mainBoard = board;
         this.statListView = statListView;
         this.nodeGestures = nodeGestures;
     }
@@ -30,12 +30,16 @@ public class BoardManager  {
       connectionSet: contains all new connections from and to newNode
       board: holds and displays newNode and its connections
       newNode: given proper event filters for dragging
+        and places node according to coords inside savedCourse
 */
     public void addCourseUpdate(CourseNode newNode) {
 //      find and remove the missing courses that are no longer missing because addition of newNode
 //            also adds new connection representing the dependency on newNode
 //        make layout of newNode not null
         mainBoard.getChildren().add(newNode);
+        newNode.setTranslateX(newNode.getSavedCourse().getPosX());
+        newNode.setTranslateY(newNode.getSavedCourse().getPosY());
+        System.out.println("Add to layout with xy: " + newNode.getSavedCourse().getPosX() + " " + newNode.getSavedCourse().getPosY());
         removeFulfilledAddConnections(newNode);
         addNewNodeToMap(newNode);
         newNode.addEventFilter( MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
@@ -154,6 +158,14 @@ public class BoardManager  {
 //        ClipboardContent cc = new ClipboardContent();
 //        cc.putString("Something");
 //        db.setContent(cc);
-        draggedCourseNode = courseNode;
+        selectedCourseNode = courseNode;
     }
- }
+
+    public HashMap<String, Integer> getSubjectMap() {
+        return statListView.getSubjectMap();
+    }
+
+    public void setSubjectMap(HashMap<String, Integer> subjectMap) {
+        statListView.setSubjectMap(subjectMap);
+    }
+}

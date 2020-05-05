@@ -152,6 +152,8 @@ public abstract class CourseWindow extends Stage {
         LinkedList<String> coreqList = new LinkedList<String>(Arrays.asList(coreqs.split(REQUISITE_COURSE_ID_SPLITTOR)));
         savedCourse.setCoReq(coreqList);
 
+//        courseNode.updateDisplay(); todo broken for now... should you even be calling it
+
         updateBoardManager();
     }
 
