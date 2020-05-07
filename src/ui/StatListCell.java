@@ -8,7 +8,7 @@ import javafx.scene.text.Text;
 
 public class StatListCell extends HBox {
 
-    final Text credlbl = new Text("Credits: ");
+    final Text creditLabel = new Text("Credits: ");
     Text name;
     Text credits;
     Color color = Color.RED;
@@ -18,7 +18,7 @@ public class StatListCell extends HBox {
         this.name = new Text(name);
         this.credits = new Text(Integer.toString(credits));
         circle = new Circle(8, color);
-        getChildren().addAll(circle, this.name, credlbl, this.credits);
+        getChildren().addAll(circle, this.name, creditLabel, this.credits);
         setSpacing(10);
         setPadding(new Insets(10));
     }

@@ -57,14 +57,13 @@ public class WriterReader {
 
 
         } catch (IOException | ClassNotFoundException e) {
-            showAlertWarning("file read oopsies!");
+            showAlertWarning("File read failed!");
             e.printStackTrace();
         }
     }
 
     private void showAlertWarning(String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
-//            alert.setTitle("Information Dialog");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();

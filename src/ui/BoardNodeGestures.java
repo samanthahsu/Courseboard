@@ -5,7 +5,8 @@ import javafx.scene.input.MouseEvent;
 
 
 /**
- * Listeners for making the nodes draggable via left mouse button. Considers if parent is zoomed.
+ * Listeners for making the courseNodes draggable via left mouse button.
+ * Considers if parent is zoomed.
  */
 class BoardNodeGestures {
 
@@ -14,7 +15,6 @@ class BoardNodeGestures {
 
     public BoardNodeGestures( Board canvas) {
         this.canvas = canvas;
-
     }
 
     public EventHandler<MouseEvent> getOnMousePressedEventHandler() {
@@ -30,7 +30,7 @@ class BoardNodeGestures {
         public void handle(MouseEvent event) {
 
             // left mouse button => dragging
-            if( !event.isPrimaryButtonDown())
+            if(!event.isPrimaryButtonDown())
                 return;
 
             nodeDragContext.mouseAnchorX = event.getSceneX();
@@ -60,7 +60,6 @@ class BoardNodeGestures {
 
             node.redrawConnections();
             event.consume();
-
         }
     };
 }

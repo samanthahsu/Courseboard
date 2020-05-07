@@ -16,6 +16,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import model.SavedCourse;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class CourseNode extends BoardComponent {
@@ -41,14 +42,17 @@ public class CourseNode extends BoardComponent {
     private SavedCourse savedCourse;
 
     private BoardManager boardManager;
+
+//    must contain all connections that have THIS as it's source/destination
     private Set<Connection> connectionsSet;
-    // todo used to update when the coursenode gets dragged around
+    // todo used to update when the courseNode gets dragged around
 
 
     /** constructor of courseNode from savedCourse
      * courseNode should always have non NULL savedCourse
      * boardManager essential for event filtering*/
     public CourseNode(BoardManager boardManager, SavedCourse savedCourse) {
+        connectionsSet = new HashSet<>();
         this.boardManager = boardManager;
         this.savedCourse = savedCourse;
         updateColors();
@@ -174,9 +178,9 @@ public class CourseNode extends BoardComponent {
 /** Pre: courseNode position has changed
  * Post: redraws all connections to match position*/
     public void redrawConnections() {
-        for(Connection c : connectionsSet) {
+        for (Connection c : connectionsSet) {
             c.draw();
+            System.out.println(c + "redrawn");
         }
-
     }
 }

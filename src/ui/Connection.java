@@ -1,13 +1,13 @@
 package ui;
 
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Region;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.*;
+import javafx.scene.shape.ArcTo;
+import javafx.scene.shape.MoveTo;
+import javafx.scene.shape.Path;
+import javafx.scene.shape.Rectangle;
 
-/** class representing lines connecting associated course nodes*/
-//    TODO make connection update with change of requisites
+/** class representing lines connecting associated course nodes
+ * IMPORTANT: source=requirer, destination=required*/
 public class Connection extends Region implements Observer {
     /*source: node that needs this
     * destination: node that is needed (requisite speaking)*/
@@ -44,6 +44,11 @@ public class Connection extends Region implements Observer {
     /** draws an arc from source to destination
      * todo make it also draw arrowhead and in different colours, symbolizing different statuses*/
     public void draw() {
+        if (path != null) {
+            getChildren().remove(path);
+        }
+
+
         path = new Path();
         moveTo = new MoveTo();
         moveTo.setX(source.getTranslateX());
@@ -55,7 +60,13 @@ public class Connection extends Region implements Observer {
         arcTo.setRadiusX(Math.abs(source.getTranslateX() - destination.getTranslateX()));
         arcTo.setRadiusY(Math.abs(source.getTranslateY() - destination.getTranslateY()));
         path.getElements().addAll(moveTo, arcTo);
+        path.setMouseTransparent(true);
         getChildren().add(path);
+
+//        Rectangle end = new Rectangle(10, 10);
+//        end.setX(destination.getTranslateX());
+//        end.setY(destination.getTranslateY());
+//        getChildren().add(end);
     }
 
     public void connect() {

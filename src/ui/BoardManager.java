@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 /** manages all board operations display-wise*/
 public class BoardManager  {
 
-    Set<Connection> connectionSet = new HashSet<>(); // this keeps track of the valid connections (fulfilled requisites)
+    Set<Connection> boardConnectionSet = new HashSet<>(); // this keeps track of the valid connections (fulfilled requisites)
     Map<CourseNode, List<String>> missingCourseIds = new HashMap<>(); // map of the course wish-list of each course
 
     Board mainBoard; // the pane everything is being attached to
@@ -39,17 +39,16 @@ public class BoardManager  {
         mainBoard.getChildren().add(newNode);
         newNode.setTranslateX(newNode.getSavedCourse().getPosX());
         newNode.setTranslateY(newNode.getSavedCourse().getPosY());
-        System.out.println("Add to layout with xy: " + newNode.getSavedCourse().getPosX() + " " + newNode.getSavedCourse().getPosY());
         removeFulfilledAddConnections(newNode);
         addNewNodeToMap(newNode);
-        newNode.addEventFilter( MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
-        newNode.addEventFilter( MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
+        newNode.addEventFilter(MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
+        newNode.addEventFilter(MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
 
         statListView.update(newNode, Operation.ADD); //todo
     }
 
     private void addNewNodeToMap(CourseNode newNode) {
-        //        todo same thing for coreqs
+        //        todo same thing for coReqs
 //        makes new list of courses required by newNode, then add newNode and it's list to the missing courses list
         List<String> missingPrereqs = new LinkedList<>(newNode.getSavedCourse().getPrereqs()); // will hold missing prereqs of new node after loop
 
@@ -68,25 +67,41 @@ public class BoardManager  {
         missingCourseIds.put(newNode, missingPrereqs); // add new course to missing course map
     }
 
-//    todo: connection being added, but not visible on display.
-    private void addConnection(CourseNode newNode, CourseNode existingNode) {
-        Connection newConnection = new Connection(newNode, existingNode);
-        connectionSet.add(newConnection);
+/**
+ * adds a connection from sourceNode to destNode
+ * updates @boardConnectionSet
+ * @param sourceNode  and @destNode's connection sets
+ * adds connection to board children
+*/
+    private void addConnection(CourseNode sourceNode, CourseNode destNode) {
+        Connection newConnection = new Connection(sourceNode, destNode);
+
+        boardConnectionSet.add(newConnection);
+        sourceNode.addConnection(newConnection);
+        destNode.addConnection(newConnection);
+
         mainBoard.getChildren().add(newConnection);
         System.out.println("New connection added!");
     }
 
 
+    /**
+     * MODIFIES: missingCourseIds, newNode
+     * POST: given the @newNode added to the board
+     *  related connections are added
+     *  fulfilled requirements are removed*/
     private void removeFulfilledAddConnections(CourseNode newNode) {
         for (Entry element : missingCourseIds.entrySet()) {
             List<String> reqList = (List<String>) element.getValue();
             String id = newNode.getSavedCourse().getcID().toString();
             if (reqList.contains(id)) {
-                Connection newConnection = new Connection((CourseNode) element.getKey(), newNode);
-                connectionSet.add(newConnection);
-                mainBoard.getChildren().add(newConnection);
+                CourseNode courseNode = (CourseNode) element.getKey();
+                addConnection(courseNode, newNode);
+//                Connection newConnection = new Connection((CourseNode) element.getKey(), newNode);
+//                boardConnectionSet.add(newConnection);
+//                mainBoard.getChildren().add(newConnection);
                 reqList.remove(id);
-                ((CourseNode) element.getKey()).updateDisplay();
+                (courseNode).updateDisplay();
             }
         }
     }
@@ -106,28 +121,31 @@ public class BoardManager  {
 
 /**
           get all connections on @board which point to @deletedNode
-          for each connection update the other corresponding node's missing courses list
-          get all connections pointed to by the deleted node and kill them dead
+          for each connection update the other corresponding node's
+            missing-courses-list to include the now missing course @deletedNode
+            and connection-set to remove connections
+          all connections pointed to by the deleted node and kill them dead
           delete all the connections
 */
     private void removeBrokenConnectionsAndAddMissing(CourseNode deletedNode) {
-        Set<Connection> newConnectionSet = new HashSet<>(connectionSet);
-        for (Connection connection : connectionSet) {
-            if (connection.destination == deletedNode) {
+        Set<Connection> newConnectionSet = new HashSet<>(boardConnectionSet);
+        for (Connection c : boardConnectionSet) {
+            if (c.destination == deletedNode) {
 //                modify the source
-                CourseNode existingNode = connection.getSource();
+                CourseNode existingNode = c.getSource();
                 List<String> list = missingCourseIds.get(existingNode);
                 list.add(deletedNode.getCourseId());
+                existingNode.removeConnection(c);
 
-                newConnectionSet.remove(connection);
-                mainBoard.getChildren().remove(connection);
-            } else if (connection.source == deletedNode) {
+                newConnectionSet.remove(c);
+                mainBoard.getChildren().remove(c);
+            } else if (c.source == deletedNode) {
 //                kill connection
-                newConnectionSet.remove(connection);
-                mainBoard.getChildren().remove(connection);
+                newConnectionSet.remove(c);
+                mainBoard.getChildren().remove(c);
             }
         }
-        connectionSet = newConnectionSet;
+        boardConnectionSet = newConnectionSet;
     }
 
 
@@ -148,7 +166,7 @@ public class BoardManager  {
     public void clearAll() {
 //        todo alert before doing this
         statListView.clearAll();
-        connectionSet.clear();
+        boardConnectionSet.clear();
         missingCourseIds.clear();
         mainBoard.getChildren().clear();
     }

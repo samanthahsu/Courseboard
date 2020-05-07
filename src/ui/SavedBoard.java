@@ -37,7 +37,7 @@ public class SavedBoard implements Serializable {
         subjectMap = manager.getSubjectMap();
     }
 
-    /** todo fills boardManager with new info, resetting the board to saved state
+    /** fills boardManager with new info, resetting the board to the saved state
      * updates both lists in manager
      * notifies manager of the change -> manager handles ui differences*/
     public void populate(BoardManager manager) {

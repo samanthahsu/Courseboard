@@ -6,12 +6,12 @@ import javafx.scene.input.ScrollEvent;
 
 
 /**
- * Listeners for making the scene's canvas draggable and zoomable
+ * Listeners for making the scene's canvas draggable and zoom-able
  */
 class BoardGestures {
 
-    private static final double MAX_SCALE = 10.0d;
-    private static final double MIN_SCALE = .1d;
+    private static final double MAX_SCALE = 2;
+    private static final double MIN_SCALE = 0.1;
 
     private BoardDragContext sceneDragContext = new BoardDragContext();
 

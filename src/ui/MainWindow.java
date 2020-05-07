@@ -39,12 +39,9 @@ public class MainWindow extends Application {
         Board board = new Board();
         BoardNodeGestures nodeGestures = new BoardNodeGestures(board); // have to add event filter from this to every draggable thing
 
-        Label label1 = new Label("Draggable node 1");
+        Label label1 = new Label("Right click to pan.");
         label1.setTranslateX(10);
         label1.setTranslateY(10);
-        label1.addEventFilter( MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
-        label1.addEventFilter( MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
-
         board.getChildren().add(label1);
 
         Pane pane = new Pane();
