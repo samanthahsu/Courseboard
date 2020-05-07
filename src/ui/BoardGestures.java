@@ -1,8 +1,17 @@
 package ui;
 
 import javafx.event.EventHandler;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeLineCap;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -15,10 +24,12 @@ class BoardGestures {
 
     private BoardDragContext sceneDragContext = new BoardDragContext();
 
-    Board canvas;
+    Board board;
 
-    public BoardGestures(Board canvas) {
-        this.canvas = canvas;
+
+    public BoardGestures(Board board) {
+        this.board = board;
+
     }
 
     public EventHandler<MouseEvent> getOnMousePressedEventHandler() {
@@ -38,15 +49,14 @@ class BoardGestures {
         public void handle(MouseEvent event) {
 
             // right mouse button => panning
-            if( !event.isSecondaryButtonDown())
+            if(!event.isSecondaryButtonDown())
                 return;
 
             sceneDragContext.mouseAnchorX = event.getSceneX();
             sceneDragContext.mouseAnchorY = event.getSceneY();
 
-            sceneDragContext.translateAnchorX = canvas.getTranslateX();
-            sceneDragContext.translateAnchorY = canvas.getTranslateY();
-
+            sceneDragContext.translateAnchorX = board.getTranslateX();
+            sceneDragContext.translateAnchorY = board.getTranslateY();
         }
 
     };
@@ -58,8 +68,8 @@ class BoardGestures {
             if( !event.isSecondaryButtonDown())
                 return;
 
-            canvas.setTranslateX(sceneDragContext.translateAnchorX + event.getSceneX() - sceneDragContext.mouseAnchorX);
-            canvas.setTranslateY(sceneDragContext.translateAnchorY + event.getSceneY() - sceneDragContext.mouseAnchorY);
+            board.setTranslateX(sceneDragContext.translateAnchorX + event.getSceneX() - sceneDragContext.mouseAnchorX);
+            board.setTranslateY(sceneDragContext.translateAnchorY + event.getSceneY() - sceneDragContext.mouseAnchorY);
 
             event.consume();
         }
@@ -75,7 +85,7 @@ class BoardGestures {
 
             double delta = 1.1;
 
-            double scale = canvas.getScale(); // currently we only use Y, same value is used for X
+            double scale = board.getScale(); // currently we only use Y, same value is used for X
             double oldScale = scale;
 
             if (event.getDeltaY() < 0)
@@ -87,31 +97,33 @@ class BoardGestures {
 
             double f = (scale / oldScale) - 1;
 
-            double dx = (event.getSceneX() - (canvas.getBoundsInParent().getWidth()/2 + canvas.getBoundsInParent().getMinX()));
-            double dy = (event.getSceneY() - (canvas.getBoundsInParent().getHeight()/2 + canvas.getBoundsInParent().getMinY()));
+            double dx = (event.getSceneX() - (board.getBoundsInParent().getWidth()/2 + board.getBoundsInParent().getMinX()));
+            double dy = (event.getSceneY() - (board.getBoundsInParent().getHeight()/2 + board.getBoundsInParent().getMinY()));
 
-            canvas.setScale(scale);
+            board.setScale(scale);
 
             // note: pivot value must be untransformed, i. e. without scaling
-            canvas.setPivot(f*dx, f*dy);
+            board.setPivot(f*dx, f*dy);
 
             event.consume();
         }
 
     };
 
-
+    /** returns clamped value between min and max*/
     public static double clamp( double value, double min, double max) {
-
         if( Double.compare(value, min) < 0)
             return min;
 
         if( Double.compare(value, max) > 0)
             return max;
-
         return value;
     }
+
 }
+
+
+
 
 
 
