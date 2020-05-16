@@ -4,7 +4,6 @@ import javafx.scene.layout.Region;
 import javafx.scene.shape.ArcTo;
 import javafx.scene.shape.MoveTo;
 import javafx.scene.shape.Path;
-import javafx.scene.shape.Rectangle;
 
 /** class representing lines connecting associated course nodes
  * IMPORTANT: source=requirer, destination=required*/
@@ -29,6 +28,7 @@ public class Connection extends Region implements Observer {
         this.destination = destination;
         destination.addObserver(this);
         connected = true;
+        setMouseTransparent(true);
 
         draw();
     }

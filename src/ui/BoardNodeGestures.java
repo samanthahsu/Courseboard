@@ -33,10 +33,12 @@ class BoardNodeGestures {
             if(!event.isPrimaryButtonDown())
                 return;
 
+
             nodeDragContext.mouseAnchorX = event.getSceneX();
             nodeDragContext.mouseAnchorY = event.getSceneY();
 
             CourseNode node = (CourseNode) event.getSource();
+            System.out.println(node + "has been left clicked");
 
             nodeDragContext.translateAnchorX = node.getTranslateX();
             nodeDragContext.translateAnchorY = node.getTranslateY();

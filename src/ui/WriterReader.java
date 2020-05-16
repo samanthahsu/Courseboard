@@ -16,7 +16,6 @@ public class WriterReader {
 
     /** generate list of all courses
      * inits x, y inside each course
-     * SHOULD CONNECTIONS BE REDRAWN EACH TIME OR SAVED??????
      * @param savedFile*/
     public void write(File savedFile) {
         String filePath = FILE_ROOT + "\\" + savedFile;
