@@ -41,6 +41,7 @@ public class BoardManager  {
         newNode.setTranslateY(newNode.getSavedCourse().getPosY());
         removeFulfilledAddConnections(newNode);
         addNewNodeToMap(newNode);
+        newNode.updateDisplay();
         newNode.addEventFilter(MouseEvent.MOUSE_PRESSED, nodeGestures.getOnMousePressedEventHandler());
         newNode.addEventFilter(MouseEvent.MOUSE_DRAGGED, nodeGestures.getOnMouseDraggedEventHandler());
 
@@ -97,6 +98,7 @@ public class BoardManager  {
             if (reqList.contains(id)) {
                 CourseNode courseNode = (CourseNode) element.getKey();
                 addConnection(courseNode, newNode);
+                System.out.println("added connection for new added node");
 //                Connection newConnection = new Connection((CourseNode) element.getKey(), newNode);
 //                boardConnectionSet.add(newConnection);
 //                mainBoard.getChildren().add(newConnection);
@@ -108,7 +110,8 @@ public class BoardManager  {
 
 
     /** handles removal of a single node
-     * called from node context menu */
+     * called from node context menu
+     * should update all connected node's prerequisite list.*/
     public void removeCourseUpdate(CourseNode deletedNode) {
 
         removeBrokenConnectionsAndAddMissing(deletedNode);
@@ -135,6 +138,7 @@ public class BoardManager  {
                 CourseNode existingNode = c.getSource();
                 List<String> list = missingCourseIds.get(existingNode);
                 list.add(deletedNode.getCourseId());
+                existingNode.updateDisplay();
                 existingNode.removeConnection(c);
 
                 newConnectionSet.remove(c);

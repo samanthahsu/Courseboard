@@ -91,7 +91,7 @@ public class CourseNode extends BoardComponent {
         coReqsText = new Text("Co-reqs here");
         coReqsText.setStroke(Color.ORANGE);
 
-        mainBody.setBackground(new Background(new BackgroundFill(Color.BURLYWOOD, null, null)));
+        mainBody.setBackground(new Background(new BackgroundFill(fillColor, null, null)));
         mainBody.getChildren().addAll(courseIdTxt, creditsTxt, notesTxt, preReqsText, coReqsText);
     }
 
@@ -148,6 +148,7 @@ public class CourseNode extends BoardComponent {
         coReqsText.setText(savedCourse.getAllCoReqDisplayString());
     }
 
+    /** context menu allows for selected node deletion and editing.*/
     private void createContextMenu() {
         ContextMenu contextMenu = new ContextMenu();
 
@@ -180,7 +181,6 @@ public class CourseNode extends BoardComponent {
     public void redrawConnections() {
         for (Connection c : connectionsSet) {
             c.draw();
-            System.out.println(c + "redrawn");
         }
     }
 }
