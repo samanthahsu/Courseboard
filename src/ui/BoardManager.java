@@ -95,6 +95,7 @@ public class BoardManager  {
         for (Entry element : missingCourseIds.entrySet()) {
             List<String> reqList = (List<String>) element.getValue();
             String id = newNode.getSavedCourse().getcID().toString();
+            System.out.println("added connection" + id);
             if (reqList.contains(id)) {
                 CourseNode courseNode = (CourseNode) element.getKey();
                 addConnection(courseNode, newNode);
@@ -137,7 +138,7 @@ public class BoardManager  {
 //                modify the source
                 CourseNode existingNode = c.getSource();
                 List<String> list = missingCourseIds.get(existingNode);
-                list.add(deletedNode.getCourseId());
+                list.add(deletedNode.getSavedCourse().getcID().toString());
                 existingNode.updateDisplay();
                 existingNode.removeConnection(c);
 
